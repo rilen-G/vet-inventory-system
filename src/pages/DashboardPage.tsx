@@ -131,7 +131,7 @@ export function DashboardPage() {
           </div>
         </Card>
 
-        <Card className="bg-[radial-gradient(circle_at_top,_rgba(62,127,98,0.12),_transparent_58%)]">
+        <Card>
           <h3 className="text-lg font-semibold text-slate-900">Alert summary</h3>
           <p className="mt-1 text-sm text-slate-600">Operational alerts that need review during the demo.</p>
 
