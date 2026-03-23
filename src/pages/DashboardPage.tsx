@@ -133,7 +133,7 @@ export function DashboardPage() {
 
         <Card>
           <h3 className="text-lg font-semibold text-slate-900">Alert summary</h3>
-          <p className="mt-1 text-sm text-slate-600">Operational alerts that need review during the demo.</p>
+          {/*<p className="mt-1 text-sm text-slate-600">Operational alerts that need review during the demo.</p>*/}
 
           <div className="mt-6 space-y-3">
             <div className="rounded-2xl bg-white/90 p-4">

@@ -78,47 +78,47 @@ export function InventoryListPage() {
       </div>
 
       <Card>
-        <div className="grid gap-3 lg:grid-cols-[2fr_1fr_1fr_auto]">
-          <Input
-            value={searchValue}
-            onChange={(event) => setSearchValue(event.target.value)}
-            placeholder="Search by item name, lot number, or category"
-          />
-          <Select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as InventoryStatusFilter)}>
-            <option value="all">All statuses</option>
-            <option value="low-stock">Low stock</option>
-            <option value="near-expiry">Near expiry</option>
-            <option value="expired">Expired</option>
-          </Select>
-          <Select value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)}>
-            <option value="all">All categories</option>
-            {categories.map((category) => (
-              <option key={category} value={category ?? ""}>
-                {category}
-              </option>
-            ))}
-          </Select>
-          <Button
-            variant="secondary"
-            onClick={() => {
-              setSearchValue("");
-              setStatusFilter("all");
-              setCategoryFilter("all");
-            }}
-          >
-            Clear filters
-          </Button>
-        </div>
-      </Card>
-
-      <Card>
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <h3 className="text-lg font-semibold text-slate-900">Inventory list</h3>
-            <p className="mt-1 text-sm text-slate-600">Search and filter inventory lots, then open an item to edit details, stock, and threshold.</p>
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h3 className="text-lg font-semibold text-slate-900">Inventory list</h3>
+              <p className="mt-1 text-sm text-slate-600">Search and filter inventory lots, then open an item to edit details, stock, and threshold.</p>
+            </div>
+            <div className="rounded-full border border-stone-200 bg-stone-50 px-4 py-2 text-sm font-medium text-slate-700">
+              Showing {filteredItems.length} of {items.length}
+            </div>
           </div>
-          <div className="rounded-full border border-stone-200 bg-stone-50 px-4 py-2 text-sm font-medium text-slate-700">
-            Showing {filteredItems.length} of {items.length}
+
+          <div className="grid gap-3 lg:grid-cols-[2fr_1fr_1fr_auto]">
+            <Input
+              value={searchValue}
+              onChange={(event) => setSearchValue(event.target.value)}
+              placeholder="Search by item name, lot number, or category"
+            />
+            <Select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as InventoryStatusFilter)}>
+              <option value="all">All statuses</option>
+              <option value="low-stock">Low stock</option>
+              <option value="near-expiry">Near expiry</option>
+              <option value="expired">Expired</option>
+            </Select>
+            <Select value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)}>
+              <option value="all">All categories</option>
+              {categories.map((category) => (
+                <option key={category} value={category ?? ""}>
+                  {category}
+                </option>
+              ))}
+            </Select>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setSearchValue("");
+                setStatusFilter("all");
+                setCategoryFilter("all");
+              }}
+            >
+              Clear filters
+            </Button>
           </div>
         </div>
 

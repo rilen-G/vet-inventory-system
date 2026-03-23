@@ -76,45 +76,45 @@ export function InvoiceListPage() {
         <StatCard label="Cancelled Drafts" value={String(cancelledCount)} detail="Draft invoices kept in history without stock effect." />
       </div>
 
-      <Card className="space-y-4">
-        <div className="grid gap-3 lg:grid-cols-[1.4fr_auto]">
-          <Input
-            value={searchValue}
-            onChange={(event) => setSearchValue(event.target.value)}
-            placeholder="Search by invoice number or customer name"
-          />
-          <Button
-            variant="secondary"
-            onClick={() => {
-              setSearchValue("");
-              setStatusFilter("all");
-            }}
-          >
-            Reset
-          </Button>
-        </div>
-
-        <div className="flex flex-wrap gap-2">
-          {statusFilters.map((status) => (
-            <Button
-              key={status}
-              variant={statusFilter === status ? "secondary" : "ghost"}
-              onClick={() => setStatusFilter(status)}
-            >
-              {status === "all" ? "All invoices" : status}
-            </Button>
-          ))}
-        </div>
-      </Card>
-
       <Card>
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <h3 className="text-lg font-semibold text-slate-900">Invoice history</h3>
-            <p className="mt-1 text-sm text-slate-600">Voided invoices remain visible here for traceability.</p>
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h3 className="text-lg font-semibold text-slate-900">Invoice history</h3>
+              <p className="mt-1 text-sm text-slate-600">Voided invoices remain visible here for traceability.</p>
+            </div>
+            <div className="rounded-full border border-stone-200 bg-stone-50 px-4 py-2 text-sm font-medium text-slate-700">
+              Showing {filteredInvoices.length} of {invoices.length}
+            </div>
           </div>
-          <div className="rounded-full border border-stone-200 bg-stone-50 px-4 py-2 text-sm font-medium text-slate-700">
-            Showing {filteredInvoices.length} of {invoices.length}
+
+          <div className="grid gap-3 lg:grid-cols-[1.4fr_auto]">
+            <Input
+              value={searchValue}
+              onChange={(event) => setSearchValue(event.target.value)}
+              placeholder="Search by invoice number or customer name"
+            />
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setSearchValue("");
+                setStatusFilter("all");
+              }}
+            >
+              Reset
+            </Button>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {statusFilters.map((status) => (
+              <Button
+                key={status}
+                variant={statusFilter === status ? "secondary" : "ghost"}
+                onClick={() => setStatusFilter(status)}
+              >
+                {status === "all" ? "All invoices" : status}
+              </Button>
+            ))}
           </div>
         </div>
 

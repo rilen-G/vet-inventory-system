@@ -1,7 +1,11 @@
+import type { ReactNode } from "react";
+
 import { SupabaseRequired } from "../components/feedback/supabase-required";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { PageHeader } from "../components/ui/page-header";
+import { InventoryStatusBadge } from "../features/inventory/components/inventory-status-badge";
+import { InvoiceStatusBadge } from "../features/invoices/components/invoice-status-badge";
 import {
   Table,
   TableBody,
@@ -16,6 +20,7 @@ import { useInvoices } from "../features/invoices/hooks";
 import { getInvoiceBalance, getInvoicePaidTotal, getInvoicePaymentStatus } from "../features/invoices/utils";
 import { useInventoryItems } from "../features/inventory/hooks";
 import { isExpired, isLowStock, isNearExpiry } from "../features/inventory/utils";
+import { PaymentStatusBadge } from "../features/payments/components/payment-status-badge";
 import { usePayments } from "../features/payments/hooks";
 import { exportReportsWorkbook } from "../features/reports/export";
 
@@ -25,7 +30,7 @@ type ReportSectionProps = {
   countLabel: string;
   countValue: number;
   headers: string[];
-  rows: string[][];
+  rows: ReactNode[][];
 };
 
 function ReportSection({ title, description, countLabel, countValue, headers, rows }: ReportSectionProps) {
@@ -140,7 +145,7 @@ export function ReportsPage() {
           item.lot_number,
           formatDate(item.expiration_date),
           String(item.stock_quantity),
-          isExpired(item.expiration_date) ? "Expired" : isNearExpiry(item.expiration_date) ? "Near Expiry" : isLowStock(item) ? "Low Stock" : "In Stock",
+          <InventoryStatusBadge key={`inventory-status-${item.id}`} item={item} />,
         ])}
       />
 
@@ -169,7 +174,7 @@ export function ReportsPage() {
           item.item_name,
           item.lot_number,
           formatDate(item.expiration_date),
-          isExpired(item.expiration_date) ? "Expired" : "Near Expiry",
+          <InventoryStatusBadge key={`expiry-status-${item.id}`} item={item} />,
           String(item.stock_quantity),
         ])}
       />
@@ -183,8 +188,8 @@ export function ReportsPage() {
         rows={invoices.slice(0, 8).map((invoice) => [
           invoice.invoice_number,
           invoice.customer_name,
-          invoice.status,
-          getInvoicePaymentStatus(invoice),
+          <InvoiceStatusBadge key={`invoice-status-${invoice.id}`} status={invoice.status} />,
+          <PaymentStatusBadge key={`invoice-payment-status-${invoice.id}`} status={getInvoicePaymentStatus(invoice)} />,
           formatCurrency(invoice.total),
           formatCurrency(getInvoiceBalance(invoice)),
         ])}

@@ -78,30 +78,30 @@ export function StockMovementsPage() {
       />
 
       <Card>
-        <div className="grid gap-3 lg:grid-cols-[1.6fr_0.7fr]">
-          <Input
-            value={searchValue}
-            onChange={(event) => setSearchValue(event.target.value)}
-            placeholder="Search by item, lot, reference, or note"
-          />
-          <Select value={movementType} onChange={(event) => setMovementType(event.target.value as (typeof movementTypeOptions)[number])}>
-            <option value="all">All movement types</option>
-            <option value="STOCK_IN">Stock in</option>
-            <option value="STOCK_OUT">Stock out</option>
-            <option value="ADJUSTMENT">Adjustment</option>
-            <option value="VOID_REVERSAL">Void restoration</option>
-          </Select>
-        </div>
-      </Card>
-
-      <Card>
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h3 className="text-lg font-semibold text-slate-900">Movement history</h3>
-            <p className="mt-1 text-sm text-slate-600">Latest inventory movements recorded across manual updates and invoice actions.</p>
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-slate-900">Movement history</h3>
+              <p className="mt-1 text-sm text-slate-600">Latest inventory movements recorded across manual updates and invoice actions.</p>
+            </div>
+            <div className="rounded-full border border-stone-200 bg-stone-50 px-4 py-2 text-sm font-medium text-slate-700">
+              Showing {filteredMovements.length} of {movements.length}
+            </div>
           </div>
-          <div className="rounded-full border border-stone-200 bg-stone-50 px-4 py-2 text-sm font-medium text-slate-700">
-            Showing {filteredMovements.length} of {movements.length}
+
+          <div className="grid gap-3 lg:grid-cols-[1.6fr_0.7fr]">
+            <Input
+              value={searchValue}
+              onChange={(event) => setSearchValue(event.target.value)}
+              placeholder="Search by item, lot, reference, or note"
+            />
+            <Select value={movementType} onChange={(event) => setMovementType(event.target.value as (typeof movementTypeOptions)[number])}>
+              <option value="all">All movement types</option>
+              <option value="STOCK_IN">Stock in</option>
+              <option value="STOCK_OUT">Stock out</option>
+              <option value="ADJUSTMENT">Adjustment</option>
+              <option value="VOID_REVERSAL">Void restoration</option>
+            </Select>
           </div>
         </div>
 
@@ -109,7 +109,7 @@ export function StockMovementsPage() {
         {movementsQuery.isError ? <p className="mt-6 text-sm text-rose-700">{movementsQuery.error.message}</p> : null}
 
         {!movementsQuery.isLoading && !movementsQuery.isError && movements.length === 0 ? (
-          <div className="mt-6">
+          <div>
             <EmptyState
               title="No stock movements yet"
               description="Inventory adjustments, finalized invoices, and voided invoices will appear here once recorded."
