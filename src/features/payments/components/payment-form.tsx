@@ -8,9 +8,8 @@ import { Textarea } from "../../../components/ui/textarea";
 import { useZodForm } from "../../../lib/forms";
 import { formatCurrency } from "../../../lib/utils";
 import type { InvoiceDetail } from "../../invoices/types";
-import { getInvoiceBalance, getInvoicePaidTotal, getInvoicePaymentStatus } from "../../invoices/utils";
+import { getInvoiceBalance, getInvoicePaidTotal } from "../../invoices/utils";
 import { paymentFormSchema, type PaymentFormValues } from "../schemas";
-import { PaymentStatusBadge } from "./payment-status-badge";
 
 type PaymentFormProps = {
   invoice: InvoiceDetail;
@@ -30,7 +29,6 @@ export function PaymentForm({ invoice, onSubmit, isSubmitting }: PaymentFormProp
   const [submitError, setSubmitError] = useState<string | null>(null);
   const balance = getInvoiceBalance(invoice);
   const paidTotal = getInvoicePaidTotal(invoice);
-  const paymentStatus = getInvoicePaymentStatus(invoice);
   const form = useZodForm(paymentFormSchema, {
     payment_date: new Date().toISOString().slice(0, 10),
     payment_method: "Cash",
@@ -47,7 +45,6 @@ export function PaymentForm({ invoice, onSubmit, isSubmitting }: PaymentFormProp
             Payments can only be recorded for finalized invoices. Remaining balance must stay zero or above.
           </p>
         </div>
-        <PaymentStatusBadge status={paymentStatus} />
       </div>
 
       <div className="mt-5 grid gap-4 rounded-3xl bg-stone-50 p-4 sm:grid-cols-3">

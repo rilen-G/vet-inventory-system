@@ -120,12 +120,9 @@ export function PaymentsPage() {
                   <h3 className="text-lg font-semibold text-slate-900">{selectedInvoice.invoice_number}</h3>
                   <p className="mt-1 text-sm text-slate-600">{selectedInvoice.customer_name}</p>
                 </div>
-                <div className="flex flex-wrap gap-3">
-                  <PaymentStatusBadge status={getInvoicePaymentStatus(selectedInvoice)} />
-                  <ButtonLink to={`/invoices/${selectedInvoice.id}`} variant="secondary">
-                    View invoice
-                  </ButtonLink>
-                </div>
+                <ButtonLink to={`/invoices/${selectedInvoice.id}`} variant="secondary">
+                  View invoice
+                </ButtonLink>
               </div>
 
               <div className="grid gap-4 rounded-3xl bg-stone-50 p-4 sm:grid-cols-3">
