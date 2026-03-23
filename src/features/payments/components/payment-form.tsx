@@ -2,7 +2,8 @@ import { useState } from "react";
 
 import { Button } from "../../../components/ui/button";
 import { Card } from "../../../components/ui/card";
-import { Input } from "../../../components/ui/input";
+import { DateInput } from "../../../components/ui/date-input";
+import { NumberInput } from "../../../components/ui/number-input";
 import { Select } from "../../../components/ui/select";
 import { Textarea } from "../../../components/ui/textarea";
 import { useZodForm } from "../../../lib/forms";
@@ -92,7 +93,7 @@ export function PaymentForm({ invoice, onSubmit, isSubmitting }: PaymentFormProp
             <label className="text-sm font-semibold text-slate-700" htmlFor="payment_date">
               Payment date
             </label>
-            <Input id="payment_date" type="date" {...form.register("payment_date")} />
+            <DateInput id="payment_date" {...form.register("payment_date")} aria-label="Open payment date calendar" />
             {fieldError(form.formState.errors.payment_date?.message)}
           </div>
 
@@ -113,7 +114,7 @@ export function PaymentForm({ invoice, onSubmit, isSubmitting }: PaymentFormProp
             <label className="text-sm font-semibold text-slate-700" htmlFor="amount_paid">
               Amount paid
             </label>
-            <Input id="amount_paid" type="number" min="0.01" step="0.01" {...form.register("amount_paid")} />
+            <NumberInput id="amount_paid" min="0.01" step="0.01" {...form.register("amount_paid")} />
             {fieldError(form.formState.errors.amount_paid?.message)}
           </div>
 

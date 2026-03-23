@@ -148,7 +148,9 @@ export function StockMovementsPage() {
                       <TableCell className="font-medium text-slate-900">{movement.item_name ?? "Inventory item"}</TableCell>
                       <TableCell>{movement.lot_number ?? "No lot"}</TableCell>
                       <TableCell>
-                        <Badge tone={getMovementTone(movement.movement_type)}>{movement.movement_type.replace("_", " ")}</Badge>
+                        <Badge tone={getMovementTone(movement.movement_type)} className="min-w-[7.5rem] justify-center text-center">
+                          {movement.movement_type.replace("_", " ")}
+                        </Badge>
                       </TableCell>
                       <TableCell className="font-medium text-slate-900">{describeMovementQuantity(movement)}</TableCell>
                       <TableCell>{movement.reference_type ?? "Manual"}</TableCell>

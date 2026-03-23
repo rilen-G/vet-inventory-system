@@ -94,7 +94,7 @@ export function PaymentsPage() {
                     type="button"
                     onClick={() => setSearchParams({ invoiceId: String(invoice.id) })}
                     className={`w-full rounded-3xl border p-4 text-left transition ${
-                      isSelected ? "border-brand-300 bg-brand-50" : "border-stone-200 bg-white hover:border-stone-300"
+                      isSelected ? "border-stone-400 bg-stone-50" : "border-stone-200 bg-white hover:border-stone-300"
                     }`}
                   >
                     <div className="flex items-start justify-between gap-3">

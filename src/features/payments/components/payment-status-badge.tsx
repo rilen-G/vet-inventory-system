@@ -7,6 +7,9 @@ type PaymentStatusBadgeProps = {
 };
 
 export function PaymentStatusBadge({ status }: PaymentStatusBadgeProps) {
-  return <Badge tone={invoicePaymentStatusTone(status)}>{status}</Badge>;
+  return (
+    <Badge tone={invoicePaymentStatusTone(status)} className="min-w-[6.0rem] justify-center text-center">
+      {status}
+    </Badge>
+  );
 }
-

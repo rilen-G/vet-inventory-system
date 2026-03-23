@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 
 import { Button } from "../../../components/ui/button";
 import { Card } from "../../../components/ui/card";
+import { DateInput } from "../../../components/ui/date-input";
 import { Input } from "../../../components/ui/input";
+import { NumberInput } from "../../../components/ui/number-input";
 import { Textarea } from "../../../components/ui/textarea";
 import { useZodForm } from "../../../lib/forms";
 import type { InventoryItem } from "../types";
@@ -105,7 +107,7 @@ export function InventoryForm({ mode, initialItem, onSubmit, submitLabel, isSubm
             <label className="text-sm font-semibold text-slate-700" htmlFor="expiration_date">
               Expiration date
             </label>
-            <Input id="expiration_date" type="date" {...register("expiration_date")} />
+            <DateInput id="expiration_date" {...register("expiration_date")} aria-label="Open expiration date calendar" />
             {fieldError(errors.expiration_date?.message)}
           </div>
 
@@ -113,7 +115,7 @@ export function InventoryForm({ mode, initialItem, onSubmit, submitLabel, isSubm
             <label className="text-sm font-semibold text-slate-700" htmlFor="stock_quantity">
               {mode === "create" ? "Opening stock quantity" : "Current stock quantity"}
             </label>
-            <Input id="stock_quantity" type="number" min="0" step="1" {...register("stock_quantity")} />
+            <NumberInput id="stock_quantity" min="0" step="1" {...register("stock_quantity")} />
             <p className="mt-2 text-sm text-slate-500">
               {mode === "create"
                 ? "Set the opening stock balance for this item lot."
@@ -126,7 +128,7 @@ export function InventoryForm({ mode, initialItem, onSubmit, submitLabel, isSubm
             <label className="text-sm font-semibold text-slate-700" htmlFor="low_stock_threshold">
               Low stock threshold
             </label>
-            <Input id="low_stock_threshold" type="number" min="0" step="1" {...register("low_stock_threshold")} />
+            <NumberInput id="low_stock_threshold" min="0" step="1" {...register("low_stock_threshold")} />
             {fieldError(errors.low_stock_threshold?.message)}
           </div>
 
@@ -134,7 +136,7 @@ export function InventoryForm({ mode, initialItem, onSubmit, submitLabel, isSubm
             <label className="text-sm font-semibold text-slate-700" htmlFor="unit_price">
               Unit price
             </label>
-            <Input id="unit_price" type="number" min="0" step="0.01" placeholder="0.00" {...register("unit_price")} />
+            <NumberInput id="unit_price" min="0" step="1" placeholder="0.00" {...register("unit_price")} />
             {fieldError(errors.unit_price?.message)}
           </div>
         </div>

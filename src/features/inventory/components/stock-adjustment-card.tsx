@@ -1,10 +1,10 @@
 import { useState } from "react";
 
+import { Button } from "../../../components/ui/button";
 import { Card } from "../../../components/ui/card";
-import { Input } from "../../../components/ui/input";
+import { NumberInput } from "../../../components/ui/number-input";
 import { Select } from "../../../components/ui/select";
 import { Textarea } from "../../../components/ui/textarea";
-import { Button } from "../../../components/ui/button";
 import { useZodForm } from "../../../lib/forms";
 import { formatDate } from "../../../lib/utils";
 import type { InventoryItem } from "../types";
@@ -97,7 +97,7 @@ export function StockAdjustmentCard({ item, onClose }: StockAdjustmentCardProps)
               <label className="text-sm font-semibold text-slate-700" htmlFor="adjustment_quantity">
                 Quantity
               </label>
-              <Input id="adjustment_quantity" type="number" min="1" step="1" {...form.register("quantity")} />
+              <NumberInput id="adjustment_quantity" min="1" step="1" {...form.register("quantity")} />
               {form.formState.errors.quantity ? (
                 <p className="mt-2 text-sm text-rose-700">{form.formState.errors.quantity.message}</p>
               ) : null}

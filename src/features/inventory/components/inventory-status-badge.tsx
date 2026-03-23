@@ -9,6 +9,9 @@ type InventoryStatusBadgeProps = {
 export function InventoryStatusBadge({ item }: InventoryStatusBadgeProps) {
   const status = getInventoryStatus(item);
 
-  return <Badge tone={inventoryStatusTone(status)}>{status}</Badge>;
+  return (
+    <Badge tone={inventoryStatusTone(status)} className="min-w-[6.0rem] justify-center text-center">
+      {status}
+    </Badge>
+  );
 }
-
