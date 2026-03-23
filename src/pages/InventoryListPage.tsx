@@ -19,17 +19,15 @@ import {
 } from "../components/ui/table";
 import { isSupabaseConfigured } from "../lib/env";
 import { formatCurrency, formatDate } from "../lib/utils";
-import { StockAdjustmentCard } from "../features/inventory/components/stock-adjustment-card";
 import { InventoryStatusBadge } from "../features/inventory/components/inventory-status-badge";
 import { useInventoryItems } from "../features/inventory/hooks";
 import type { InventoryStatusFilter } from "../features/inventory/types";
-import { getInventoryStatus, isExpired, isLowStock, isNearExpiry, matchesInventoryFilter } from "../features/inventory/utils";
+import { isExpired, isLowStock, isNearExpiry, matchesInventoryFilter } from "../features/inventory/utils";
 
 export function InventoryListPage() {
   const [searchValue, setSearchValue] = useState("");
   const [statusFilter, setStatusFilter] = useState<InventoryStatusFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
   const inventoryQuery = useInventoryItems();
 
   if (!isSupabaseConfigured) {
@@ -37,7 +35,7 @@ export function InventoryListPage() {
       <div className="space-y-6">
         <PageHeader
           title="Inventory"
-          description="Connect Supabase first, then this page will show live stock balances, status badges, search, and stock adjustments."
+          description="Connect Supabase first, then this page will show live stock balances, status badges, search, and edit access for each item."
           action={<ButtonLink to="/inventory/new">Add item</ButtonLink>}
         />
         <SupabaseRequired />
@@ -59,7 +57,6 @@ export function InventoryListPage() {
     return matchesSearch && matchesCategory && matchesInventoryFilter(item, statusFilter);
   });
   const categories = Array.from(new Set(items.map((item) => item.company_category).filter(Boolean))).sort();
-  const selectedItem = items.find((item) => item.id === selectedItemId) ?? null;
   const totalItems = items.length;
   const lowStockCount = items.filter((item) => isLowStock(item) && !isExpired(item.expiration_date)).length;
   const nearExpiryCount = items.filter((item) => isNearExpiry(item.expiration_date)).length;
@@ -69,7 +66,7 @@ export function InventoryListPage() {
     <div className="space-y-6">
       <PageHeader
         title="Inventory"
-        description="Manage product lots, track stock balances, and record manual stock adjustments with a clear movement history."
+        description="Manage product lots, track stock balances, and edit stock and threshold values from the item form."
         action={<ButtonLink to="/inventory/new">Add item</ButtonLink>}
       />
 
@@ -118,7 +115,7 @@ export function InventoryListPage() {
         <div className="flex items-center justify-between gap-3">
           <div>
             <h3 className="text-lg font-semibold text-slate-900">Inventory list</h3>
-            <p className="mt-1 text-sm text-slate-600">Search and filter inventory lots, then edit details or record stock changes.</p>
+            <p className="mt-1 text-sm text-slate-600">Search and filter inventory lots, then open an item to edit details, stock, and threshold.</p>
           </div>
           <div className="rounded-full border border-stone-200 bg-stone-50 px-4 py-2 text-sm font-medium text-slate-700">
             Showing {filteredItems.length} of {items.length}
@@ -191,18 +188,9 @@ export function InventoryListPage() {
                       </TableCell>
                       <TableCell>{formatCurrency(item.unit_price)}</TableCell>
                       <TableCell>
-                        <div className="flex flex-wrap gap-2">
-                          <ButtonLink className="px-3 py-2 text-xs" variant="secondary" to={`/inventory/${item.id}/edit`}>
-                            Edit
-                          </ButtonLink>
-                          <Button
-                            className="px-3 py-2 text-xs"
-                            variant={selectedItemId === item.id ? "primary" : "ghost"}
-                            onClick={() => setSelectedItemId((currentId) => (currentId === item.id ? null : item.id))}
-                          >
-                            {selectedItemId === item.id ? "Close adjustment" : "Adjust stock"}
-                          </Button>
-                        </div>
+                        <ButtonLink className="px-3 py-2 text-xs" variant="secondary" to={`/inventory/${item.id}/edit`}>
+                          Edit
+                        </ButtonLink>
                       </TableCell>
                     </tr>
                   ))}
@@ -212,17 +200,6 @@ export function InventoryListPage() {
           </div>
         ) : null}
       </Card>
-
-      {selectedItem ? <StockAdjustmentCard item={selectedItem} onClose={() => setSelectedItemId(null)} /> : null}
-
-      {selectedItem ? (
-        <Card className="bg-stone-50">
-          <div className="text-sm text-slate-600">
-            Selected item status: <span className="font-semibold text-slate-900">{getInventoryStatus(selectedItem)}</span>. Last updated{" "}
-            {selectedItem.updated_at ? formatDate(selectedItem.updated_at) : "recently"}.
-          </div>
-        </Card>
-      ) : null}
     </div>
   );
 }

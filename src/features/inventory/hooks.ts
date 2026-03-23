@@ -76,6 +76,9 @@ export function useUpdateInventoryItem(id: number) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: inventoryKeys.all });
       queryClient.invalidateQueries({ queryKey: inventoryKeys.detail(id) });
+      queryClient.invalidateQueries({ queryKey: inventoryKeys.movements(id) });
+      queryClient.invalidateQueries({ queryKey: inventoryKeys.stockMovements });
+      queryClient.invalidateQueries({ queryKey: inventoryKeys.recentMovements });
     },
   });
 }

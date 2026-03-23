@@ -110,6 +110,18 @@ export async function createInventoryItem(values: InventoryItemFormValues) {
 
 export async function updateInventoryItem(id: number, values: InventoryItemFormValues) {
   const supabase = getSupabaseClient();
+  const { data: currentItem, error: currentItemError } = await supabase
+    .from("inventory_items")
+    .select("stock_quantity")
+    .eq("id", id)
+    .single();
+
+  if (currentItemError) {
+    throw new Error(currentItemError.message);
+  }
+
+  const targetStockQuantity = values.stock_quantity;
+  const stockDelta = targetStockQuantity - Number(currentItem.stock_quantity ?? 0);
   const payload: InventoryUpdate = {
     item_name: values.item_name.trim(),
     company_category: values.company_category.trim(),
@@ -120,13 +132,34 @@ export async function updateInventoryItem(id: number, values: InventoryItemFormV
     notes: cleanText(values.notes),
   };
 
-  const { data, error } = await supabase.from("inventory_items").update(payload).eq("id", id).select("*").single();
+  const { error } = await supabase.from("inventory_items").update(payload).eq("id", id);
 
   if (error) {
     throw new Error(error.message);
   }
 
-  return normalizeInventoryItem(data as unknown as Record<string, unknown>);
+  if (stockDelta !== 0) {
+    const { error: movementError } = await supabase.from("stock_movements").insert({
+      inventory_item_id: id,
+      movement_type: "ADJUSTMENT",
+      quantity: stockDelta,
+      reference_type: "ITEM_EDIT",
+      reference_id: id,
+      notes: `Stock updated from item edit screen to ${targetStockQuantity}.`,
+    });
+
+    if (movementError) {
+      throw new Error(movementError.message);
+    }
+  }
+
+  const { data: refreshedItem, error: refreshedItemError } = await supabase.from("inventory_items").select("*").eq("id", id).single();
+
+  if (refreshedItemError) {
+    throw new Error(refreshedItemError.message);
+  }
+
+  return normalizeInventoryItem(refreshedItem as unknown as Record<string, unknown>);
 }
 
 export async function adjustInventoryStock(inventoryItemId: number, values: StockAdjustmentValues) {

@@ -69,7 +69,7 @@ export function InventoryFormPage({ mode }: InventoryFormPageProps) {
         description={
           mode === "create"
             ? "Create a new product lot with opening stock, pricing, and expiry details."
-            : "Update lot details, threshold, pricing, and notes. Use stock adjustment to change the current balance."
+            : "Update lot details, current stock, threshold, pricing, and notes from one screen."
         }
         action={
           <ButtonLink to="/inventory" variant="secondary">

@@ -113,11 +113,11 @@ export function InventoryForm({ mode, initialItem, onSubmit, submitLabel, isSubm
             <label className="text-sm font-semibold text-slate-700" htmlFor="stock_quantity">
               {mode === "create" ? "Opening stock quantity" : "Current stock quantity"}
             </label>
-            <Input id="stock_quantity" type="number" min="0" step="1" disabled={mode === "edit"} {...register("stock_quantity")} />
+            <Input id="stock_quantity" type="number" min="0" step="1" {...register("stock_quantity")} />
             <p className="mt-2 text-sm text-slate-500">
               {mode === "create"
                 ? "Set the opening stock balance for this item lot."
-                : "Stock changes are handled through manual stock adjustment to keep a movement history."}
+                : "Update the current stock here. Changes are still recorded in the stock movement log."}
             </p>
             {fieldError(errors.stock_quantity?.message)}
           </div>
@@ -156,4 +156,3 @@ export function InventoryForm({ mode, initialItem, onSubmit, submitLabel, isSubm
     </Card>
   );
 }
-
