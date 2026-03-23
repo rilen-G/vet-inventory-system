@@ -9,10 +9,10 @@ type ButtonLinkProps = LinkProps & {
 };
 
 const variantClasses: Record<ButtonLinkVariant, string> = {
-  primary: "bg-slate-950 text-white shadow-sm hover:bg-slate-800",
+  primary: "bg-slate-950 text-white hover:bg-slate-800",
   secondary: "border border-stone-300 bg-white text-slate-800 hover:border-stone-400 hover:bg-stone-50",
   ghost: "bg-transparent text-slate-700 hover:bg-stone-100",
-  danger: "bg-rose-600 text-white shadow-sm hover:bg-rose-700",
+  danger: "bg-rose-600 text-white hover:bg-rose-700",
 };
 
 export function ButtonLink({ className, variant = "primary", ...props }: ButtonLinkProps) {

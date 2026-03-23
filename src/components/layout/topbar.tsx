@@ -18,19 +18,18 @@ export function Topbar() {
   return (
     <header className="sticky top-0 z-30 border-b border-stone-200/80 bg-white/88 backdrop-blur-xl">
       <div className="mx-auto max-w-[1720px] px-4 sm:px-6 lg:px-8">
-        <div className="flex min-h-[72px] items-center justify-between gap-4">
+        <div className="relative flex min-h-[72px] items-center justify-between gap-4">
           <button
             type="button"
             onClick={() => setMobileOpen((current) => !current)}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-stone-200 bg-white text-slate-700 shadow-sm transition hover:border-stone-300 hover:text-slate-950 md:hidden"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-stone-200 bg-white text-slate-700 transition hover:border-stone-300 hover:text-slate-950 md:hidden"
             aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
           >
             <MenuIcon />
           </button>
 
-          <div className="min-w-0 md:hidden">
-            <div className="truncate text-base font-semibold text-slate-950">{routeDisplay.title}</div>
-            <div className="truncate text-sm text-slate-500">{routeDisplay.subtitle}</div>
+          <div className="pointer-events-none absolute left-1/2 flex -translate-x-1/2 flex-col items-center md:hidden">
+            <div className="max-w-[200px] truncate text-base font-semibold text-slate-950">{routeDisplay.title}</div>
           </div>
 
           <nav className="hidden min-w-0 flex-1 items-center gap-2 md:flex">
@@ -41,9 +40,7 @@ export function Topbar() {
                 className={({ isActive }) =>
                   cn(
                     "inline-flex items-center rounded-full px-4 py-2 text-sm font-medium transition",
-                    isActive
-                      ? "bg-slate-900 text-white shadow-sm"
-                      : "text-slate-600 hover:bg-stone-100 hover:text-slate-950",
+                    isActive ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-stone-100 hover:text-slate-950",
                   )
                 }
               >
@@ -51,10 +48,6 @@ export function Topbar() {
               </NavLink>
             ))}
           </nav>
-
-          <div className="hidden min-w-0 items-center rounded-full border border-stone-200 bg-stone-50 px-4 py-2 text-sm text-slate-600 xl:flex">
-            <span className="truncate">{routeDisplay.subtitle}</span>
-          </div>
         </div>
 
         <div
@@ -71,9 +64,7 @@ export function Topbar() {
                 className={({ isActive }) =>
                   cn(
                     "rounded-2xl border px-4 py-3 transition",
-                    isActive
-                      ? "border-slate-900 bg-slate-900 text-white shadow-sm"
-                      : "border-stone-200 bg-white text-slate-700 hover:border-stone-300 hover:bg-stone-50",
+                    isActive ? "border-slate-900 bg-slate-900 text-white" : "border-stone-200 bg-white text-slate-700 hover:border-stone-300 hover:bg-stone-50",
                   )
                 }
               >

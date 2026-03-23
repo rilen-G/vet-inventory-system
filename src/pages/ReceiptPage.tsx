@@ -85,7 +85,7 @@ export function ReceiptPage() {
             <Button onClick={() => downloadReceiptPdf(paymentQuery.data)}>Download PDF</Button>
           </div>
 
-          <Card className="mx-auto max-w-4xl print:shadow-none">
+          <Card className="mx-auto max-w-4xl">
             <div className="rounded-3xl border border-stone-200 bg-stone-50 p-6">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div>
