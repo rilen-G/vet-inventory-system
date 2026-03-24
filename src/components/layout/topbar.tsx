@@ -4,12 +4,10 @@ import { NavLink, useLocation } from "react-router-dom";
 import { primaryNavItems } from "../../lib/constants";
 import { cn } from "../../lib/utils";
 import { MenuIcon } from "./topbar-menu";
-import { useRouteDisplay } from "./use-route-display";
 
 export function Topbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
-  const routeDisplay = useRouteDisplay();
 
   useEffect(() => {
     setMobileOpen(false);
@@ -19,20 +17,24 @@ export function Topbar() {
     <header className="sticky top-0 z-30 border-b border-stone-200/80 bg-white/88 backdrop-blur-xl">
       <div className="mx-auto max-w-[1720px] px-4 sm:px-6 lg:px-8">
         <div className="relative flex min-h-[72px] items-center justify-between gap-4">
-          <button
-            type="button"
-            onClick={() => setMobileOpen((current) => !current)}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-stone-200 bg-white text-slate-700 transition hover:border-stone-300 hover:text-slate-950 md:hidden"
-            aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
-          >
-            <MenuIcon />
-          </button>
+          <div className="flex min-w-0 items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setMobileOpen((current) => !current)}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-stone-200 bg-white text-slate-700 transition hover:border-stone-300 hover:text-slate-950 md:hidden"
+              aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
+            >
+              <MenuIcon />
+            </button>
 
-          <div className="pointer-events-none absolute left-1/2 flex -translate-x-1/2 flex-col items-center md:hidden">
-            <div className="max-w-[200px] truncate text-base font-semibold text-slate-950">{routeDisplay.title}</div>
+            <div className="min-w-0">
+              <div className="truncate text-sm font-semibold uppercase tracking-[0.18em] text-slate-500 sm:text-[0.78rem]">
+                Cared Veterinary Products Trading
+              </div>
+            </div>
           </div>
 
-          <nav className="hidden min-w-0 flex-1 items-center gap-2 md:flex">
+          <nav className="hidden min-w-0 items-center gap-2 md:ml-auto md:flex">
             {primaryNavItems.map((item) => (
               <NavLink
                 key={item.to}
