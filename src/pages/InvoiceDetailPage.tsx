@@ -43,13 +43,18 @@ export function InvoiceDetailPage() {
   const [voidOpen, setVoidOpen] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const invoiceQuery = useInvoiceDetail(isValidInvoiceId ? invoiceId : null);
-  const inventoryItemsQuery = useInventoryItems();
+  const inventoryItemsQuery = useInventoryItems(true);
   const cancelMutation = useCancelDraftInvoice(invoiceId ?? 0);
   const finalizeMutation = useFinalizeInvoice(invoiceId ?? 0);
   const voidMutation = useVoidInvoice(invoiceId ?? 0);
   const voidForm = useZodForm(voidInvoiceSchema, {
     void_reason: "",
   });
+
+  function closeVoidModal() {
+    setVoidOpen(false);
+    voidForm.reset({ void_reason: "" });
+  }
 
   if (!isSupabaseConfigured) {
     return (
@@ -150,8 +155,16 @@ export function InvoiceDetailPage() {
               <div className="flex flex-wrap items-center gap-3">
                 <InvoiceStatusBadge status={invoice.status} />
                 {invoice.status === "Draft" ? (
-                  <ButtonLink to={`/invoices/${invoice.id}/edit`} variant="secondary">
-                    Edit draft
+                  <ButtonLink
+                    className="h-9 w-9 rounded-full border-0 bg-transparent p-0"
+                    to={`/invoices/${invoice.id}/edit`}
+                    variant="ghost"
+                    title="Edit"
+                    aria-label="Edit"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                    </svg>
                   </ButtonLink>
                 ) : null}
               </div>
@@ -406,35 +419,40 @@ export function InvoiceDetailPage() {
 
           <Modal
             open={voidOpen}
-            onClose={() => setVoidOpen(false)}
+            onClose={closeVoidModal}
             title="Void finalized invoice"
             description="Voiding restores stock and keeps the invoice visible in history. A reason is required."
             footer={
               <>
-                <Button variant="secondary" onClick={() => setVoidOpen(false)} disabled={voidMutation.isPending}>
+                <Button variant="secondary" onClick={closeVoidModal} disabled={voidMutation.isPending}>
                   Back
                 </Button>
-                <Button
-                  variant="danger"
-                  onClick={voidForm.handleSubmit(async (values) => {
-                    setActionError(null);
-
-                    try {
-                      await voidMutation.mutateAsync(values.void_reason);
-                      voidForm.reset({ void_reason: "" });
-                      setVoidOpen(false);
-                    } catch (error) {
-                      setActionError(error instanceof Error ? error.message : "Unable to void this invoice.");
-                    }
-                  })}
-                  disabled={voidMutation.isPending}
-                >
+                <Button variant="danger" type="submit" form="void-invoice-form" disabled={voidMutation.isPending}>
                   {voidMutation.isPending ? "Voiding..." : "Void invoice"}
                 </Button>
               </>
             }
           >
-            <div className="space-y-4">
+            <form
+              id="void-invoice-form"
+              className="space-y-4"
+              onSubmit={voidForm.handleSubmit(async (values) => {
+                setActionError(null);
+
+                try {
+                  await voidMutation.mutateAsync(values.void_reason);
+                  closeVoidModal();
+                } catch (error) {
+                  setActionError(error instanceof Error ? error.message : "Unable to void this invoice.");
+                }
+              })}
+            >
+              {voidForm.formState.errors.void_reason ? (
+                <div className="rounded-2xl bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                  Please enter a void reason before voiding this invoice.
+                </div>
+              ) : null}
+
               <div>
                 <label className="text-sm font-semibold text-slate-700" htmlFor="void_reason">
                   Void reason
@@ -452,7 +470,7 @@ export function InvoiceDetailPage() {
               <div className="rounded-2xl bg-rose-50 px-4 py-3 text-sm text-rose-900">
                 Stock for every line item will be restored through stock movement entries.
               </div>
-            </div>
+            </form>
           </Modal>
         </>
       ) : null}

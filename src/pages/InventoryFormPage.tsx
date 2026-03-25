@@ -69,7 +69,9 @@ export function InventoryFormPage({ mode }: InventoryFormPageProps) {
         description={
           mode === "create"
             ? "Create a new product lot with opening stock, pricing, and expiry details."
-            : "Update lot details, current stock, threshold, pricing, and notes from one screen."
+            : currentItem?.is_archived
+              ? "Review or update this archived item. Restoring it is done from the inventory list."
+              : "Update lot details, current stock, threshold, pricing, and notes from one screen."
         }
         action={
           <ButtonLink to="/inventory" variant="secondary">
@@ -98,6 +100,7 @@ export function InventoryFormPage({ mode }: InventoryFormPageProps) {
               <p className="mt-1 text-sm text-slate-600">
                 Lot {currentItem.lot_number} • Current stock {currentItem.stock_quantity} • Threshold {currentItem.low_stock_threshold}
               </p>
+              {currentItem.is_archived ? <p className="mt-2 text-sm font-medium text-stone-600">This item is archived.</p> : null}
             </div>
             <InventoryStatusBadge item={currentItem} />
           </div>

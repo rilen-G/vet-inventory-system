@@ -19,6 +19,7 @@ export function normalizeInventoryItem(record: Record<string, unknown>): Invento
     stock_quantity: toNumber(record.stock_quantity),
     low_stock_threshold: toNumber(record.low_stock_threshold),
     unit_price: toNumber(record.unit_price),
+    is_archived: Boolean(record.is_archived),
     notes: record.notes ? String(record.notes) : null,
     created_at: record.created_at ? String(record.created_at) : null,
     updated_at: record.updated_at ? String(record.updated_at) : null,

@@ -11,7 +11,7 @@ import { isExpired, isLowStock, isNearExpiry } from "../features/inventory/utils
 import { usePayments } from "../features/payments/hooks";
 
 export function DashboardPage() {
-  const inventoryQuery = useInventoryItems();
+  const inventoryQuery = useInventoryItems(false);
   const invoicesQuery = useInvoices();
   const paymentsQuery = usePayments();
   const movementsQuery = useRecentStockMovements();

@@ -14,3 +14,5 @@ export type StockMovementActivity = StockMovement & {
 export type InventoryStatus = "In Stock" | "Low Stock" | "Near Expiry" | "Expired";
 
 export type InventoryStatusFilter = "all" | "low-stock" | "near-expiry" | "expired";
+
+export type InventoryAvailabilityFilter = "active" | "archived" | "all";

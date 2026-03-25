@@ -1,9 +1,10 @@
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 import { SupabaseRequired } from "../components/feedback/supabase-required";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { PageHeader } from "../components/ui/page-header";
+import { Pagination } from "../components/ui/pagination";
 import { InventoryStatusBadge } from "../features/inventory/components/inventory-status-badge";
 import { InvoiceStatusBadge } from "../features/invoices/components/invoice-status-badge";
 import {
@@ -17,7 +18,7 @@ import {
 import { isSupabaseConfigured } from "../lib/env";
 import { formatCurrency, formatDate } from "../lib/utils";
 import { useInvoices } from "../features/invoices/hooks";
-import { getInvoiceBalance, getInvoicePaidTotal, getInvoicePaymentStatus } from "../features/invoices/utils";
+import { getInvoiceBalance, getInvoicePaymentStatus } from "../features/invoices/utils";
 import { useInventoryItems } from "../features/inventory/hooks";
 import { isExpired, isLowStock, isNearExpiry } from "../features/inventory/utils";
 import { PaymentStatusBadge } from "../features/payments/components/payment-status-badge";
@@ -27,22 +28,29 @@ import { exportReportsWorkbook } from "../features/reports/export";
 type ReportSectionProps = {
   title: string;
   description: string;
-  countLabel: string;
-  countValue: number;
   headers: string[];
   rows: ReactNode[][];
 };
 
-function ReportSection({ title, description, countLabel, countValue, headers, rows }: ReportSectionProps) {
+function ReportSection({ title, description, headers, rows }: ReportSectionProps) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+  const totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
+  const paginatedRows = rows.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+  const emptyRows = rows.length >= pageSize ? pageSize - paginatedRows.length : 0;
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
+
   return (
     <Card>
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+      <div>
         <div>
           <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
           <p className="mt-1 text-sm leading-6 text-slate-600">{description}</p>
-        </div>
-        <div className="rounded-full border border-stone-200 bg-stone-50 px-4 py-2 text-sm font-medium text-slate-700">
-          {countLabel}: {countValue}
         </div>
       </div>
 
@@ -60,16 +68,28 @@ function ReportSection({ title, description, countLabel, countValue, headers, ro
                 </tr>
               </TableHead>
               <TableBody>
-                {rows.map((row, index) => (
+                {paginatedRows.map((row, index) => (
                   <tr key={`${title}-${index}`}>
                     {row.map((value, columnIndex) => (
                       <TableCell key={`${title}-${index}-${columnIndex}`}>{value}</TableCell>
                     ))}
                   </tr>
                 ))}
+                {Array.from({ length: emptyRows }).map((_, index) => (
+                  <tr key={`${title}-empty-${index}`} aria-hidden="true">
+                    <TableCell colSpan={headers.length} className="h-[73px] bg-white" />
+                  </tr>
+                ))}
               </TableBody>
             </Table>
           </TableContainer>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={rows.length}
+            onPrevious={() => setCurrentPage((page) => Math.max(1, page - 1))}
+            onNext={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+          />
         </div>
       )}
     </Card>
@@ -77,7 +97,7 @@ function ReportSection({ title, description, countLabel, countValue, headers, ro
 }
 
 export function ReportsPage() {
-  const inventoryQuery = useInventoryItems();
+  const inventoryQuery = useInventoryItems(false);
   const invoicesQuery = useInvoices();
   const paymentsQuery = usePayments();
 
@@ -136,10 +156,8 @@ export function ReportsPage() {
       <ReportSection
         title="Inventory report"
         description="Current inventory lots with stock, expiry, and pricing details."
-        countLabel="Total lots"
-        countValue={inventoryItems.length}
         headers={["Item", "Category", "Lot", "Expiry", "Stock", "Status"]}
-        rows={inventoryItems.slice(0, 8).map((item) => [
+        rows={inventoryItems.map((item) => [
           item.item_name,
           item.company_category ?? "Uncategorized",
           item.lot_number,
@@ -152,10 +170,8 @@ export function ReportsPage() {
       <ReportSection
         title="Low stock report"
         description="Inventory lots at or below their configured threshold."
-        countLabel="Low stock lots"
-        countValue={lowStockItems.length}
         headers={["Item", "Lot", "Stock", "Threshold", "Category"]}
-        rows={lowStockItems.slice(0, 8).map((item) => [
+        rows={lowStockItems.map((item) => [
           item.item_name,
           item.lot_number,
           String(item.stock_quantity),
@@ -167,10 +183,8 @@ export function ReportsPage() {
       <ReportSection
         title="Expiry report"
         description="Inventory lots that are near expiry or already expired."
-        countLabel="Expiry alerts"
-        countValue={expiryItems.length}
         headers={["Item", "Lot", "Expiry Date", "Status", "Stock"]}
-        rows={expiryItems.slice(0, 8).map((item) => [
+        rows={expiryItems.map((item) => [
           item.item_name,
           item.lot_number,
           formatDate(item.expiration_date),
@@ -182,10 +196,8 @@ export function ReportsPage() {
       <ReportSection
         title="Invoice status report"
         description="Invoice lifecycle and payment summary across the current dataset."
-        countLabel="Invoices"
-        countValue={invoices.length}
         headers={["Invoice", "Customer", "Status", "Payment Status", "Total", "Balance"]}
-        rows={invoices.slice(0, 8).map((invoice) => [
+        rows={invoices.map((invoice) => [
           invoice.invoice_number,
           invoice.customer_name,
           <InvoiceStatusBadge key={`invoice-status-${invoice.id}`} status={invoice.status} />,
@@ -198,10 +210,8 @@ export function ReportsPage() {
       <ReportSection
         title="Payment history report"
         description="Recorded payments and their linked invoice references."
-        countLabel="Payments"
-        countValue={payments.length}
         headers={["Receipt", "Invoice", "Customer", "Date", "Method", "Amount"]}
-        rows={payments.slice(0, 8).map((payment) => [
+        rows={payments.map((payment) => [
           payment.receipt_number,
           payment.invoice?.invoice_number ?? "Unknown",
           payment.invoice?.customer_name ?? "Unknown",

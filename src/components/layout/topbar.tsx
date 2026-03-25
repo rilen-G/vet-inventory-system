@@ -29,13 +29,13 @@ export function Topbar() {
 
             <div className="hidden min-w-0 md:block">
               <div className="truncate text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
-                Cared Veterinary Products Trading
+                L.B. Veterinary Products Trading
               </div>
             </div>
           </div>
 
           <div className="pointer-events-none absolute left-1/2 flex -translate-x-1/2 flex-col items-center text-center leading-tight text-slate-600 md:hidden">
-            <span className="whitespace-nowrap text-[0.72rem] font-semibold uppercase tracking-[0.16em]">Cared Veterinary</span>
+            <span className="whitespace-nowrap text-[0.72rem] font-semibold uppercase tracking-[0.16em]">L.B. Veterinary</span>
             <span className="whitespace-nowrap text-[0.66rem] font-medium uppercase tracking-[0.14em]">Products Trading</span>
           </div>
 

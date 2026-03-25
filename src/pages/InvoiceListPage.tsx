@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { SupabaseRequired } from "../components/feedback/supabase-required";
 import { Button } from "../components/ui/button";
@@ -7,6 +7,7 @@ import { Card } from "../components/ui/card";
 import { EmptyState } from "../components/ui/empty-state";
 import { Input } from "../components/ui/input";
 import { PageHeader } from "../components/ui/page-header";
+import { Pagination } from "../components/ui/pagination";
 import { StatCard } from "../components/ui/stat-card";
 import {
   Table,
@@ -29,7 +30,9 @@ const statusFilters: InvoiceStatusFilter[] = ["all", "Draft", "Finalized", "Void
 export function InvoiceListPage() {
   const [statusFilter, setStatusFilter] = useState<InvoiceStatusFilter>("all");
   const [searchValue, setSearchValue] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const invoicesQuery = useInvoices();
+  const pageSize = 10;
 
   if (!isSupabaseConfigured) {
     return (
@@ -60,6 +63,19 @@ export function InvoiceListPage() {
   const finalizedCount = invoices.filter((invoice) => invoice.status === "Finalized").length;
   const voidedCount = invoices.filter((invoice) => invoice.status === "Voided").length;
   const cancelledCount = invoices.filter((invoice) => invoice.status === "Cancelled").length;
+  const totalPages = Math.max(1, Math.ceil(filteredInvoices.length / pageSize));
+  const paginatedInvoices = filteredInvoices.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+  const emptyRows = filteredInvoices.length >= pageSize ? pageSize - paginatedInvoices.length : 0;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [statusFilter, searchValue]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   return (
     <div className="space-y-6">
@@ -78,14 +94,9 @@ export function InvoiceListPage() {
 
       <Card>
         <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <h3 className="text-lg font-semibold text-slate-900">Invoice history</h3>
-              <p className="mt-1 text-sm text-slate-600">Voided invoices remain visible here for traceability.</p>
-            </div>
-            <div className="rounded-full border border-stone-200 bg-stone-50 px-4 py-2 text-sm font-medium text-slate-700">
-              Showing {filteredInvoices.length} of {invoices.length}
-            </div>
+          <div>
+            <h3 className="text-lg font-semibold text-slate-900">Invoice history</h3>
+            <p className="mt-1 text-sm text-slate-600">Voided invoices remain visible here for traceability.</p>
           </div>
 
           <div className="grid gap-3 lg:grid-cols-[1.4fr_auto]">
@@ -170,7 +181,7 @@ export function InvoiceListPage() {
                   </tr>
                 </TableHead>
                 <TableBody>
-                  {filteredInvoices.map((invoice) => (
+                  {paginatedInvoices.map((invoice) => (
                     <tr key={invoice.id}>
                       <TableCell className="font-medium text-slate-900">{invoice.invoice_number}</TableCell>
                       <TableCell>
@@ -194,17 +205,37 @@ export function InvoiceListPage() {
                             View
                           </ButtonLink>
                           {invoice.status === "Draft" ? (
-                            <ButtonLink className="px-3 py-2 text-xs" variant="ghost" to={`/invoices/${invoice.id}/edit`}>
-                              Edit draft
+                            <ButtonLink
+                              className="h-9 w-9 rounded-full border-0 bg-transparent p-0"
+                              variant="ghost"
+                              to={`/invoices/${invoice.id}/edit`}
+                              title="Edit"
+                              aria-label="Edit"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                              </svg>
                             </ButtonLink>
                           ) : null}
                         </div>
                       </TableCell>
                     </tr>
                   ))}
+                  {Array.from({ length: emptyRows }).map((_, index) => (
+                    <tr key={`invoice-empty-${index}`} aria-hidden="true">
+                      <TableCell colSpan={10} className="h-[73px] bg-white" />
+                    </tr>
+                  ))}
                 </TableBody>
               </Table>
             </TableContainer>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={filteredInvoices.length}
+              onPrevious={() => setCurrentPage((page) => Math.max(1, page - 1))}
+              onNext={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+            />
           </div>
         ) : null}
       </Card>

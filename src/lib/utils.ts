@@ -22,6 +22,10 @@ export function formatCurrency(value: number) {
   }).format(value);
 }
 
+export function roundCurrency(value: number) {
+  return Math.round((value + Number.EPSILON) * 100) / 100;
+}
+
 export function toNumber(value: unknown) {
   if (typeof value === "number") {
     return value;

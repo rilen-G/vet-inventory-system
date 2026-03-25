@@ -9,21 +9,23 @@ import {
   listInventoryMovements,
   listRecentStockMovements,
   listStockMovements,
+  setInventoryItemArchived,
   updateInventoryItem,
 } from "./api";
 
 export const inventoryKeys = {
   all: ["inventory"] as const,
+  list: (includeArchived: boolean) => ["inventory", "list", includeArchived ? "with-archived" : "active-only"] as const,
   detail: (id: number) => ["inventory", id] as const,
   movements: (id: number) => ["inventory", "movements", id] as const,
   stockMovements: ["inventory", "stock-movements"] as const,
   recentMovements: ["inventory", "recent-movements"] as const,
 };
 
-export function useInventoryItems() {
+export function useInventoryItems(includeArchived = false) {
   return useQuery({
-    queryKey: inventoryKeys.all,
-    queryFn: listInventoryItems,
+    queryKey: inventoryKeys.list(includeArchived),
+    queryFn: () => listInventoryItems({ includeArchived }),
   });
 }
 
@@ -94,6 +96,18 @@ export function useAdjustInventoryStock(inventoryItemId: number) {
       queryClient.invalidateQueries({ queryKey: inventoryKeys.movements(inventoryItemId) });
       queryClient.invalidateQueries({ queryKey: inventoryKeys.stockMovements });
       queryClient.invalidateQueries({ queryKey: inventoryKeys.recentMovements });
+    },
+  });
+}
+
+export function useSetInventoryItemArchived() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, isArchived }: { id: number; isArchived: boolean }) => setInventoryItemArchived(id, isArchived),
+    onSuccess: (item) => {
+      queryClient.invalidateQueries({ queryKey: inventoryKeys.all });
+      queryClient.invalidateQueries({ queryKey: inventoryKeys.detail(item.id) });
     },
   });
 }

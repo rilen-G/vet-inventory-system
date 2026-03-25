@@ -1,5 +1,6 @@
 import { getSupabaseClient } from "../../lib/supabase";
 import type { Database } from "../../types/database";
+import { roundCurrency } from "../../lib/utils";
 import { normalizeInvoicePayment } from "../invoices/utils";
 import type { PaymentFormValues } from "./schemas";
 import { buildReceiptNumber, normalizePaymentWithInvoice } from "./utils";
@@ -42,7 +43,7 @@ export async function recordPayment(invoiceId: number, values: PaymentFormValues
     p_receipt_number: receiptNumber,
     p_payment_date: values.payment_date,
     p_payment_method: values.payment_method,
-    p_amount_paid: values.amount_paid,
+    p_amount_paid: roundCurrency(values.amount_paid),
     p_notes: values.notes ?? null,
   });
 
@@ -52,4 +53,3 @@ export async function recordPayment(invoiceId: number, values: PaymentFormValues
 
   return normalizeInvoicePayment(data as unknown as Record<string, unknown>);
 }
-

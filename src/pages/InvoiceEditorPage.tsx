@@ -21,11 +21,12 @@ export function InvoiceEditorPage({ mode }: InvoiceEditorPageProps) {
   const navigate = useNavigate();
   const invoiceId = mode === "edit" && id ? Number(id) : null;
   const isValidEditId = invoiceId !== null && !Number.isNaN(invoiceId);
-  const inventoryItemsQuery = useInventoryItems();
+  const inventoryItemsQuery = useInventoryItems(true);
   const invoiceDetailQuery = useInvoiceDetail(mode === "edit" && isValidEditId ? invoiceId : null);
   const createMutation = useCreateDraftInvoice();
   const updateMutation = useUpdateDraftInvoice(invoiceId ?? 0);
   const isSubmitting = createMutation.isPending || updateMutation.isPending;
+  const activeInventoryItems = (inventoryItemsQuery.data ?? []).filter((item) => !item.is_archived);
 
   const initialValues: InvoiceFormValues | undefined = invoiceDetailQuery.data
     ? {
@@ -109,10 +110,12 @@ export function InvoiceEditorPage({ mode }: InvoiceEditorPageProps) {
         </Card>
       ) : null}
 
-      {!inventoryItemsQuery.isLoading && !inventoryItemsQuery.isError && (inventoryItemsQuery.data?.length ?? 0) === 0 ? (
+      {!inventoryItemsQuery.isLoading &&
+      !inventoryItemsQuery.isError &&
+      ((mode === "create" && activeInventoryItems.length === 0) || (inventoryItemsQuery.data?.length ?? 0) === 0) ? (
         <EmptyState
           title="No inventory items available"
-          description="Add inventory items first before creating invoices."
+          description="Add or restore an active inventory item first before creating invoices."
           action={<ButtonLink to="/inventory">Go to inventory</ButtonLink>}
         />
       ) : null}
@@ -151,7 +154,7 @@ export function InvoiceEditorPage({ mode }: InvoiceEditorPageProps) {
 
       {!inventoryItemsQuery.isLoading &&
       !inventoryItemsQuery.isError &&
-      (inventoryItemsQuery.data?.length ?? 0) > 0 &&
+      ((mode === "create" && activeInventoryItems.length > 0) || mode === "edit") &&
       (mode === "create" || (currentInvoice && currentInvoice.status === "Draft")) ? (
         <InvoiceForm
           mode={mode}

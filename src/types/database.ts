@@ -11,6 +11,7 @@ export type Database = {
           stock_quantity: number;
           low_stock_threshold: number;
           unit_price: number;
+          is_archived: boolean;
           notes: string | null;
           created_at: string | null;
           updated_at: string | null;
@@ -24,6 +25,7 @@ export type Database = {
           stock_quantity?: number;
           low_stock_threshold?: number;
           unit_price?: number;
+          is_archived?: boolean;
           notes?: string | null;
           created_at?: string | null;
           updated_at?: string | null;

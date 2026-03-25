@@ -7,7 +7,7 @@ import { NumberInput } from "../../../components/ui/number-input";
 import { Select } from "../../../components/ui/select";
 import { Textarea } from "../../../components/ui/textarea";
 import { useZodForm } from "../../../lib/forms";
-import { formatCurrency } from "../../../lib/utils";
+import { formatCurrency, roundCurrency } from "../../../lib/utils";
 import type { InvoiceDetail } from "../../invoices/types";
 import { getInvoiceBalance, getInvoicePaidTotal } from "../../invoices/utils";
 import { paymentFormSchema, type PaymentFormValues } from "../schemas";
@@ -30,10 +30,11 @@ export function PaymentForm({ invoice, onSubmit, isSubmitting }: PaymentFormProp
   const [submitError, setSubmitError] = useState<string | null>(null);
   const balance = getInvoiceBalance(invoice);
   const paidTotal = getInvoicePaidTotal(invoice);
+  const defaultAmount = roundCurrency(balance);
   const form = useZodForm(paymentFormSchema, {
     payment_date: new Date().toISOString().slice(0, 10),
     payment_method: "Cash",
-    amount_paid: balance,
+    amount_paid: defaultAmount,
     notes: "",
   });
 
@@ -78,7 +79,7 @@ export function PaymentForm({ invoice, onSubmit, isSubmitting }: PaymentFormProp
             form.reset({
               payment_date: new Date().toISOString().slice(0, 10),
               payment_method: "Cash",
-              amount_paid: Math.max(balance - values.amount_paid, 0),
+              amount_paid: roundCurrency(Math.max(balance - values.amount_paid, 0)),
               notes: "",
             });
           } catch (error) {
@@ -114,7 +115,7 @@ export function PaymentForm({ invoice, onSubmit, isSubmitting }: PaymentFormProp
             <label className="text-sm font-semibold text-slate-700" htmlFor="amount_paid">
               Amount paid
             </label>
-            <NumberInput id="amount_paid" min="0.01" step="0.01" {...form.register("amount_paid")} />
+            <NumberInput id="amount_paid" min="0.01" step="0.01" showStepper={false} {...form.register("amount_paid")} />
             {fieldError(form.formState.errors.amount_paid?.message)}
           </div>
 

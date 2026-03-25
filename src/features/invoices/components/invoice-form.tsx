@@ -162,11 +162,9 @@ export function InvoiceForm({
           <div className="flex items-center justify-between gap-3">
             <div>
               <h3 className="text-lg font-semibold text-slate-900">Invoice items</h3>
-              {/*<p className="mt-1 text-sm text-slate-600">*/}
-              {/*  Select inventory lots, then set quantity. Unit price comes from inventory. Drafts can exceed stock, but finalization will be blocked until stock is sufficient.*/}
-              {/*</p>*/}
             </div>
             <Button
+              type="button"
               variant="secondary"
               onClick={() => lineItemsArray.append({ inventory_item_id: 0, quantity: 1, unit_price: 0 })}
             >
@@ -182,6 +180,7 @@ export function InvoiceForm({
             {lineItemsArray.fields.map((field, index) => {
               const lineItem = watchedLineItems[index];
               const selectedItem = inventoryItems.find((item) => item.id === Number(lineItem?.inventory_item_id));
+              const selectableInventoryItems = inventoryItems.filter((item) => !item.is_archived || item.id === selectedItem?.id);
               const quantity = Number(lineItem?.quantity ?? 0);
               const unitPrice = Number(lineItem?.unit_price ?? 0);
               const exceedsStock = selectedItem ? quantity > selectedItem.stock_quantity : false;
@@ -205,17 +204,19 @@ export function InvoiceForm({
                         }}
                       >
                         <option value="0">Select an inventory lot</option>
-                        {inventoryItems.map((item) => (
+                        {selectableInventoryItems.map((item) => (
                           <option key={item.id} value={item.id}>
-                            {item.item_name} • {item.lot_number} • Stock {item.stock_quantity}
+                            {item.item_name} - {item.lot_number} - Stock {item.stock_quantity}
+                            {item.is_archived ? " - Archived" : ""}
                           </option>
                         ))}
                       </Select>
                       {fieldError(form.formState.errors.line_items?.[index]?.inventory_item_id?.message)}
                       {selectedItem ? (
                         <p className="mt-2 text-sm text-slate-500">
-                          {selectedItem.company_category ?? "No category"} • {selectedItem.lot_number} • Current stock {selectedItem.stock_quantity} •{" "}
+                          {selectedItem.company_category ?? "No category"} - {selectedItem.lot_number} - Current stock {selectedItem.stock_quantity} -{" "}
                           {getInventoryStatus(selectedItem)}
+                          {selectedItem.is_archived ? " - Archived item" : ""}
                         </p>
                       ) : null}
                     </div>
@@ -241,6 +242,7 @@ export function InvoiceForm({
 
                     <div className="flex items-center pt-0">
                       <Button
+                        type="button"
                         variant="ghost"
                         className="w-full px-0"
                         onClick={() => {

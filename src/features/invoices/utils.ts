@@ -1,4 +1,4 @@
-import { toNumber } from "../../lib/utils";
+import { roundCurrency, toNumber } from "../../lib/utils";
 import type { Invoice, InvoiceDetail, InvoiceLineItem, InvoicePayment, InvoicePaymentStatus, InvoiceStatus } from "./types";
 
 export function normalizeInvoice(record: Record<string, unknown>): Invoice {
@@ -89,7 +89,7 @@ export function calculateInvoiceTotals(
     unit_price: number;
   }>,
 ) {
-  const subtotal = lineItems.reduce((sum, item) => sum + item.quantity * item.unit_price, 0);
+  const subtotal = roundCurrency(lineItems.reduce((sum, item) => sum + item.quantity * item.unit_price, 0));
 
   return {
     subtotal,
@@ -98,11 +98,11 @@ export function calculateInvoiceTotals(
 }
 
 export function getInvoicePaidTotal(invoice: Pick<InvoiceDetail, "payments">) {
-  return invoice.payments.reduce((sum, payment) => sum + payment.amount_paid, 0);
+  return roundCurrency(invoice.payments.reduce((sum, payment) => sum + payment.amount_paid, 0));
 }
 
 export function getInvoiceBalance(invoice: Pick<InvoiceDetail, "total" | "payments">) {
-  return Math.max(invoice.total - getInvoicePaidTotal(invoice), 0);
+  return roundCurrency(Math.max(invoice.total - getInvoicePaidTotal(invoice), 0));
 }
 
 export function getInvoicePaymentStatus(invoice: Pick<InvoiceDetail, "total" | "payments">): InvoicePaymentStatus {

@@ -19,10 +19,14 @@ create table if not exists public.inventory_items (
   stock_quantity integer not null default 0 check (stock_quantity >= 0),
   low_stock_threshold integer not null default 5 check (low_stock_threshold >= 0),
   unit_price numeric(12,2) not null default 0 check (unit_price >= 0),
+  is_archived boolean not null default false,
   notes text,
   created_at timestamp with time zone not null default now(),
   updated_at timestamp with time zone not null default now()
 );
+
+alter table public.inventory_items
+  add column if not exists is_archived boolean not null default false;
 
 create unique index if not exists inventory_items_lot_number_key
   on public.inventory_items (lot_number);
@@ -35,6 +39,9 @@ create index if not exists inventory_items_company_category_idx
 
 create index if not exists inventory_items_expiration_date_idx
   on public.inventory_items (expiration_date);
+
+create index if not exists inventory_items_is_archived_idx
+  on public.inventory_items (is_archived);
 
 drop trigger if exists inventory_items_set_updated_at on public.inventory_items;
 create trigger inventory_items_set_updated_at

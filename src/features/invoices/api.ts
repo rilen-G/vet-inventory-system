@@ -12,12 +12,36 @@ function cleanText(value?: string | null) {
   return nextValue ? nextValue : null;
 }
 
+function isMissingArchivedColumnError(error: { message?: string; code?: string } | null) {
+  if (!error) {
+    return false;
+  }
+
+  const message = error.message ?? "";
+
+  return (
+    error.code === "42703" ||
+    /inventory_items\.is_archived/i.test(message) ||
+    (/is_archived/i.test(message) && /inventory_items/i.test(message) && /schema cache/i.test(message))
+  );
+}
+
 async function getInventorySnapshotMap(inventoryItemIds: number[]) {
   const supabase = getSupabaseClient();
-  const { data, error } = await supabase
+  let { data, error } = await supabase
     .from("inventory_items")
-    .select("id, item_name, lot_number, unit_price, stock_quantity")
+    .select("id, item_name, lot_number, unit_price, stock_quantity, is_archived")
     .in("id", inventoryItemIds);
+
+  if (isMissingArchivedColumnError(error)) {
+    const fallbackResult = await supabase
+      .from("inventory_items")
+      .select("id, item_name, lot_number, unit_price, stock_quantity")
+      .in("id", inventoryItemIds);
+
+    data = fallbackResult.data ? fallbackResult.data.map((item) => ({ ...item, is_archived: false })) : null;
+    error = fallbackResult.error;
+  }
 
   if (error) {
     throw new Error(error.message);

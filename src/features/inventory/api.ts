@@ -6,9 +6,27 @@ import { normalizeInventoryItem, normalizeStockMovement, normalizeStockMovementA
 type InventoryInsert = Database["public"]["Tables"]["inventory_items"]["Insert"];
 type InventoryUpdate = Database["public"]["Tables"]["inventory_items"]["Update"];
 
+type ListInventoryItemsOptions = {
+  includeArchived?: boolean;
+};
+
 function cleanText(value?: string | null) {
   const nextValue = value?.trim();
   return nextValue ? nextValue : null;
+}
+
+function isMissingArchivedColumnError(error: { message?: string; code?: string } | null) {
+  if (!error) {
+    return false;
+  }
+
+  const message = error.message ?? "";
+
+  return (
+    error.code === "42703" ||
+    /inventory_items\.is_archived/i.test(message) ||
+    (/is_archived/i.test(message) && /inventory_items/i.test(message) && /schema cache/i.test(message))
+  );
 }
 
 function toInventoryPayload(values: InventoryItemFormValues): InventoryInsert {
@@ -20,17 +38,35 @@ function toInventoryPayload(values: InventoryItemFormValues): InventoryInsert {
     stock_quantity: values.stock_quantity,
     low_stock_threshold: values.low_stock_threshold,
     unit_price: values.unit_price,
+    is_archived: false,
     notes: cleanText(values.notes),
   };
 }
 
-export async function listInventoryItems() {
+export async function listInventoryItems(options: ListInventoryItemsOptions = {}) {
   const supabase = getSupabaseClient();
-  const { data, error } = await supabase
-    .from("inventory_items")
-    .select("*")
-    .order("item_name", { ascending: true })
-    .order("expiration_date", { ascending: true });
+  let query = supabase.from("inventory_items").select("*");
+
+  if (options.includeArchived) {
+    query = query.order("is_archived", { ascending: true });
+  } else {
+    query = query.eq("is_archived", false);
+  }
+
+  query = query.order("item_name", { ascending: true }).order("expiration_date", { ascending: true });
+
+  let { data, error } = await query;
+
+  if (isMissingArchivedColumnError(error)) {
+    const fallbackResult = await supabase
+      .from("inventory_items")
+      .select("*")
+      .order("item_name", { ascending: true })
+      .order("expiration_date", { ascending: true });
+
+    data = fallbackResult.data;
+    error = fallbackResult.error;
+  }
 
   if (error) {
     throw new Error(error.message);
@@ -160,6 +196,25 @@ export async function updateInventoryItem(id: number, values: InventoryItemFormV
   }
 
   return normalizeInventoryItem(refreshedItem as unknown as Record<string, unknown>);
+}
+
+export async function setInventoryItemArchived(id: number, isArchived: boolean) {
+  const supabase = getSupabaseClient();
+  const { data, error } = await supabase
+    .from("inventory_items")
+    .update({ is_archived: isArchived })
+    .eq("id", id)
+    .select("*")
+    .single();
+
+  if (error) {
+    if (isMissingArchivedColumnError(error)) {
+      throw new Error("Archive is not available yet. Run the latest Supabase schema update first.");
+    }
+    throw new Error(error.message);
+  }
+
+  return normalizeInventoryItem(data as unknown as Record<string, unknown>);
 }
 
 export async function adjustInventoryStock(inventoryItemId: number, values: StockAdjustmentValues) {

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { SupabaseRequired } from "../components/feedback/supabase-required";
 import { Badge } from "../components/ui/badge";
@@ -6,6 +6,7 @@ import { Card } from "../components/ui/card";
 import { EmptyState } from "../components/ui/empty-state";
 import { Input } from "../components/ui/input";
 import { PageHeader } from "../components/ui/page-header";
+import { Pagination } from "../components/ui/pagination";
 import { Select } from "../components/ui/select";
 import {
   Table,
@@ -38,7 +39,9 @@ function getMovementTone(type: string) {
 export function StockMovementsPage() {
   const [searchValue, setSearchValue] = useState("");
   const [movementType, setMovementType] = useState<(typeof movementTypeOptions)[number]>("all");
+  const [currentPage, setCurrentPage] = useState(1);
   const movementsQuery = useStockMovements();
+  const pageSize = 10;
 
   if (!isSupabaseConfigured) {
     return (
@@ -69,6 +72,19 @@ export function StockMovementsPage() {
       }),
     [movementType, movements, normalizedSearch],
   );
+  const totalPages = Math.max(1, Math.ceil(filteredMovements.length / pageSize));
+  const paginatedMovements = filteredMovements.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+  const emptyRows = filteredMovements.length >= pageSize ? pageSize - paginatedMovements.length : 0;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchValue, movementType]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   return (
     <div className="space-y-6">
@@ -79,14 +95,9 @@ export function StockMovementsPage() {
 
       <Card>
         <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h3 className="text-lg font-semibold text-slate-900">Movement history</h3>
-              <p className="mt-1 text-sm text-slate-600">Latest inventory movements recorded across manual updates and invoice actions.</p>
-            </div>
-            <div className="rounded-full border border-stone-200 bg-stone-50 px-4 py-2 text-sm font-medium text-slate-700">
-              Showing {filteredMovements.length} of {movements.length}
-            </div>
+          <div>
+            <h3 className="text-lg font-semibold text-slate-900">Movement history</h3>
+            <p className="mt-1 text-sm text-slate-600">Latest inventory movements recorded across manual updates and invoice actions.</p>
           </div>
 
           <div className="grid gap-3 lg:grid-cols-[1.6fr_0.7fr]">
@@ -142,7 +153,7 @@ export function StockMovementsPage() {
                   </tr>
                 </TableHead>
                 <TableBody>
-                  {filteredMovements.map((movement) => (
+                  {paginatedMovements.map((movement) => (
                     <tr key={movement.id}>
                       <TableCell>{movement.created_at ? formatDate(movement.created_at) : "Unknown"}</TableCell>
                       <TableCell className="font-medium text-slate-900">{movement.item_name ?? "Inventory item"}</TableCell>
@@ -157,9 +168,21 @@ export function StockMovementsPage() {
                       <TableCell>{movement.notes ?? "No note"}</TableCell>
                     </tr>
                   ))}
+                  {Array.from({ length: emptyRows }).map((_, index) => (
+                    <tr key={`movement-empty-${index}`} aria-hidden="true">
+                      <TableCell colSpan={7} className="h-[73px] bg-white" />
+                    </tr>
+                  ))}
                 </TableBody>
               </Table>
             </TableContainer>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={filteredMovements.length}
+              onPrevious={() => setCurrentPage((page) => Math.max(1, page - 1))}
+              onNext={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+            />
           </div>
         ) : null}
       </Card>
