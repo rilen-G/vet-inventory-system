@@ -27,11 +27,16 @@ export function Topbar() {
               <MenuIcon />
             </button>
 
-            <div className="min-w-0">
-              <div className="truncate text-sm font-semibold uppercase tracking-[0.18em] text-slate-500 sm:text-[0.78rem]">
+            <div className="hidden min-w-0 md:block">
+              <div className="truncate text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
                 Cared Veterinary Products Trading
               </div>
             </div>
+          </div>
+
+          <div className="pointer-events-none absolute left-1/2 flex -translate-x-1/2 flex-col items-center text-center leading-tight text-slate-600 md:hidden">
+            <span className="whitespace-nowrap text-[0.72rem] font-semibold uppercase tracking-[0.16em]">Cared Veterinary</span>
+            <span className="whitespace-nowrap text-[0.66rem] font-medium uppercase tracking-[0.14em]">Products Trading</span>
           </div>
 
           <nav className="hidden min-w-0 items-center gap-2 md:ml-auto md:flex">

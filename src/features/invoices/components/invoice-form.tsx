@@ -239,7 +239,7 @@ export function InvoiceForm({
                       {fieldError(form.formState.errors.line_items?.[index]?.unit_price?.message)}
                     </div>
 
-                    <div className="flex items-center pt-5">
+                    <div className="flex items-center pt-0">
                       <Button
                         variant="ghost"
                         className="w-full px-0"
