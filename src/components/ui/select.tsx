@@ -8,12 +8,12 @@ export const Select = forwardRef<HTMLSelectElement, SelectHTMLAttributes<HTMLSel
       <select
         ref={ref}
         className={cn(
-          "h-11 w-full appearance-none rounded-2xl border border-stone-300 bg-white px-4 pr-12 text-sm text-slate-900 outline-none transition focus:border-stone-500 focus:ring-4 focus:ring-stone-200",
+          "h-11 w-full appearance-none rounded-2xl border border-[#c9ab67]/45 bg-white px-4 pr-12 text-sm text-slate-900 outline-none transition focus:border-[#b89443] focus:ring-4 focus:ring-[#efe2bc]",
           className,
         )}
         {...props}
       />
-      <span className="pointer-events-none absolute inset-y-0 right-4 inline-flex items-center text-stone-500">
+      <span className="pointer-events-none absolute inset-y-0 right-4 inline-flex items-center text-[#b89443]">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

@@ -121,7 +121,7 @@ export function DashboardPage() {
               <div className="rounded-2xl bg-stone-50 px-4 py-3 text-sm text-slate-600">No recent activity yet.</div>
             ) : (
               recentActivities.map((activity) => (
-                <div key={activity.id} className="rounded-2xl border border-stone-200 bg-stone-50 p-4">
+                <div key={activity.id} className="rounded-2xl border border-[#c9ab67]/35 bg-[#fcfaf4] p-4">
                   <div className="text-sm font-semibold text-slate-900">{activity.title}</div>
                   <div className="mt-1 text-sm text-slate-600">{activity.subtitle}</div>
                   <div className="mt-2 text-xs uppercase tracking-[0.18em] text-stone-500">{formatDate(activity.occurredAt)}</div>
@@ -136,15 +136,15 @@ export function DashboardPage() {
           {/*<p className="mt-1 text-sm text-slate-600">Operational alerts that need review during the demo.</p>*/}
 
           <div className="mt-6 space-y-3">
-            <div className="rounded-2xl bg-white/90 p-4">
+            <div className="rounded-2xl border border-[#c9ab67]/25 bg-white/90 p-4">
               <div className="text-sm font-medium text-slate-700">Low stock</div>
               <div className="mt-2 text-2xl font-semibold text-slate-900">{lowStockCount}</div>
             </div>
-            <div className="rounded-2xl bg-white/90 p-4">
+            <div className="rounded-2xl border border-[#c9ab67]/25 bg-white/90 p-4">
               <div className="text-sm font-medium text-slate-700">Near expiry</div>
               <div className="mt-2 text-2xl font-semibold text-slate-900">{nearExpiryCount}</div>
             </div>
-            <div className="rounded-2xl bg-white/90 p-4">
+            <div className="rounded-2xl border border-[#c9ab67]/25 bg-white/90 p-4">
               <div className="text-sm font-medium text-slate-700">Expired</div>
               <div className="mt-2 text-2xl font-semibold text-slate-900">{expiredCount}</div>
             </div>

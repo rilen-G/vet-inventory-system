@@ -44,7 +44,7 @@ export const DateInput = forwardRef<HTMLInputElement, DateInputProps>(({ classNa
       />
       <button
         type="button"
-        className="absolute inset-y-0 right-3 inline-flex items-center justify-center text-slate-500 transition hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-stone-300"
+        className="absolute inset-y-0 right-3 inline-flex items-center justify-center text-[#b89443] transition hover:text-[#8f6a1d] focus:outline-none focus:ring-2 focus:ring-[#e5d19d]"
         onClick={openPicker}
         aria-label={props["aria-label"] ?? "Open calendar"}
       >

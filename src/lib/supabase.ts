@@ -8,8 +8,8 @@ let client: SupabaseClient<Database> | null = null;
 if (isSupabaseConfigured) {
   client = createClient<Database>(env.supabaseUrl, env.supabaseAnonKey, {
     auth: {
-      persistSession: false,
-      autoRefreshToken: false,
+      persistSession: true,
+      autoRefreshToken: true,
     },
   });
 }
@@ -23,4 +23,3 @@ export function getSupabaseClient() {
 
   return client;
 }
-

@@ -3,19 +3,19 @@ import type { HTMLAttributes, TableHTMLAttributes, TdHTMLAttributes, ThHTMLAttri
 import { cn } from "../../lib/utils";
 
 export function TableContainer({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("overflow-x-auto rounded-[28px] border border-stone-200", className)} {...props} />;
+  return <div className={cn("overflow-x-auto rounded-[28px] border border-[#c9ab67]/45 bg-white", className)} {...props} />;
 }
 
 export function Table({ className, ...props }: TableHTMLAttributes<HTMLTableElement>) {
-  return <table className={cn("min-w-full divide-y divide-stone-200", className)} {...props} />;
+  return <table className={cn("min-w-full divide-y divide-[#c9ab67]/40", className)} {...props} />;
 }
 
 export function TableHead({ className, ...props }: HTMLAttributes<HTMLTableSectionElement>) {
-  return <thead className={cn("bg-stone-50/90", className)} {...props} />;
+  return <thead className={cn("border-b border-[#c9ab67]/40 bg-[#fcfaf4]", className)} {...props} />;
 }
 
 export function TableBody({ className, ...props }: HTMLAttributes<HTMLTableSectionElement>) {
-  return <tbody className={cn("divide-y divide-stone-100 bg-white", className)} {...props} />;
+  return <tbody className={cn("divide-y divide-[#c9ab67]/35 bg-white", className)} {...props} />;
 }
 
 export function TableHeaderCell({ className, ...props }: ThHTMLAttributes<HTMLTableCellElement>) {

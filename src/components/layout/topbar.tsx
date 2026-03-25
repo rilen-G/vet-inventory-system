@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 
+import { useAuth } from "../../features/auth/use-auth";
 import { primaryNavItems } from "../../lib/constants";
 import { cn } from "../../lib/utils";
 import { MenuIcon } from "./topbar-menu";
 
 export function Topbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
   const location = useLocation();
+  const { appUser, authUser, signOut } = useAuth();
+  const rawUserLabel = appUser?.full_name?.trim() || appUser?.email || authUser?.email || "Staff user";
+  const userLabel = rawUserLabel.replace(/^Demo\s+/i, "");
 
   useEffect(() => {
     setMobileOpen(false);
@@ -21,40 +26,59 @@ export function Topbar() {
             <button
               type="button"
               onClick={() => setMobileOpen((current) => !current)}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-stone-200 bg-white text-slate-700 transition hover:border-stone-300 hover:text-slate-950 md:hidden"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-[#c9ab67]/45 bg-[#fcfaf4] text-[#b89443] transition hover:border-[#b89443] hover:text-[#8f6a1d] md:hidden"
               aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
             >
               <MenuIcon />
             </button>
 
             <div className="hidden min-w-0 md:block">
-              <div className="truncate text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
+              <div className="truncate text-sm font-semibold uppercase tracking-[0.18em] text-[#b89443]">
                 L.B. Veterinary Products Trading
               </div>
             </div>
           </div>
 
-          <div className="pointer-events-none absolute left-1/2 flex -translate-x-1/2 flex-col items-center text-center leading-tight text-slate-600 md:hidden">
+          <div className="pointer-events-none absolute left-1/2 flex -translate-x-1/2 flex-col items-center text-center leading-tight text-[#b89443] md:hidden">
             <span className="whitespace-nowrap text-[0.72rem] font-semibold uppercase tracking-[0.16em]">L.B. Veterinary</span>
             <span className="whitespace-nowrap text-[0.66rem] font-medium uppercase tracking-[0.14em]">Products Trading</span>
           </div>
 
-          <nav className="hidden min-w-0 items-center gap-2 md:ml-auto md:flex">
-            {primaryNavItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) =>
-                  cn(
-                    "inline-flex items-center rounded-full px-4 py-2 text-sm font-medium transition",
-                    isActive ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-stone-100 hover:text-slate-950",
-                  )
+          <div className="hidden min-w-0 items-center gap-3 md:ml-auto md:flex">
+            <div className="max-w-[220px] truncate text-sm text-slate-500">{userLabel}</div>
+            <nav className="min-w-0 items-center gap-2 md:flex">
+              {primaryNavItems.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) =>
+                    cn(
+                      "inline-flex items-center rounded-full px-4 py-2 text-sm font-medium transition",
+                      isActive ? "bg-[#b89443] text-white" : "text-[#b89443] hover:bg-[#fcfaf4] hover:text-[#8f6a1d]",
+                    )
+                  }
+                >
+                  {item.label}
+                </NavLink>
+              ))}
+            </nav>
+            <button
+              type="button"
+              onClick={async () => {
+                setIsSigningOut(true);
+
+                try {
+                  await signOut();
+                } finally {
+                  setIsSigningOut(false);
                 }
-              >
-                {item.label}
-              </NavLink>
-            ))}
-          </nav>
+              }}
+              className="inline-flex items-center rounded-full px-4 py-2 text-sm font-medium text-[#b89443] transition hover:bg-[#fcfaf4] hover:text-[#8f6a1d] disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={isSigningOut}
+            >
+              {isSigningOut ? "Logging out..." : "Logout"}
+            </button>
+          </div>
         </div>
 
         <div
@@ -71,13 +95,32 @@ export function Topbar() {
                 className={({ isActive }) =>
                   cn(
                     "rounded-2xl border px-4 py-3 transition",
-                    isActive ? "border-slate-900 bg-slate-900 text-white" : "border-stone-200 bg-white text-slate-700 hover:border-stone-300 hover:bg-stone-50",
+                    isActive
+                      ? "border-[#b89443] bg-[#b89443] text-white"
+                      : "border-[#c9ab67]/45 bg-white text-[#b89443] hover:border-[#b89443] hover:bg-[#fcfaf4]",
                   )
                 }
               >
                 <div className="text-sm font-semibold">{item.label}</div>
               </NavLink>
             ))}
+            <div className="rounded-2xl border border-[#c9ab67]/35 bg-[#fcfaf4] px-4 py-3 text-sm text-slate-600">{userLabel}</div>
+            <button
+              type="button"
+              onClick={async () => {
+                setIsSigningOut(true);
+
+                try {
+                  await signOut();
+                } finally {
+                  setIsSigningOut(false);
+                }
+              }}
+              className="rounded-2xl border border-[#c9ab67]/45 bg-white px-4 py-3 text-left text-sm font-semibold text-[#b89443] transition hover:border-[#b89443] hover:bg-[#fcfaf4] disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={isSigningOut}
+            >
+              {isSigningOut ? "Logging out..." : "Logout"}
+            </button>
           </nav>
         </div>
       </div>

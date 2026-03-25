@@ -2,5 +2,6 @@
 <project version="4">
   <component name="DataSourcePerFileMappings">
     <file url="file://$PROJECT_DIR$/supabase/schema.sql" value="e564e4ff-9d72-44ed-aa08-93b31116361a" />
+    <file url="file://$PROJECT_DIR$/supabase/staff-users.sql" value="e564e4ff-9d72-44ed-aa08-93b31116361a" />
   </component>
 </project>

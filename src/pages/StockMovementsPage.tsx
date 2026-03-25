@@ -95,10 +95,10 @@ export function StockMovementsPage() {
 
       <Card>
         <div className="flex flex-col gap-4">
-          <div>
-            <h3 className="text-lg font-semibold text-slate-900">Movement history</h3>
-            <p className="mt-1 text-sm text-slate-600">Latest inventory movements recorded across manual updates and invoice actions.</p>
-          </div>
+          {/*<div>*/}
+          {/*  <h3 className="text-lg font-semibold text-slate-900">Movement history</h3>*/}
+          {/*  <p className="mt-1 text-sm text-slate-600">Latest inventory movements recorded across manual updates and invoice actions.</p>*/}
+          {/*</div>*/}
 
           <div className="grid gap-3 lg:grid-cols-[1.6fr_0.7fr]">
             <Input

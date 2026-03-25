@@ -4,8 +4,12 @@
 
 :root {
   font-family: Aptos, "Segoe UI Variable", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  color: #16202a;
+  color: #13233f;
   background: #f2f4ef;
+  --text-primary: #13233f;
+  --text-primary-soft: #20324d;
+  --text-secondary: #667892;
+  --text-secondary-soft: #7b8aa0;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -36,6 +40,28 @@ textarea {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+@layer utilities {
+  .text-slate-950,
+  .text-slate-900,
+  .text-slate-800 {
+    color: var(--text-primary);
+  }
+
+  .text-slate-700 {
+    color: var(--text-primary-soft);
+  }
+
+  .text-slate-600,
+  .text-stone-500 {
+    color: var(--text-secondary);
+  }
+
+  .text-slate-500,
+  .text-stone-400 {
+    color: var(--text-secondary-soft);
+  }
 }
 
 .calendar-input::-webkit-calendar-picker-indicator {

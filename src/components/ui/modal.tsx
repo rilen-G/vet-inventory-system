@@ -43,16 +43,18 @@ export function Modal({ open, onClose, title, description, footer, size = "md", 
     return null;
   }
 
+  const hasBodyContent = children !== undefined && children !== null;
+
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 px-4 py-8">
       <div className="absolute inset-0" onClick={onClose} />
-      <div className={cn("relative w-full rounded-3xl bg-white", sizeClasses[size])}>
-        <div className="border-b border-stone-200 px-6 py-5">
+      <div className={cn("relative w-full rounded-3xl border border-[#c9ab67]/45 bg-white", sizeClasses[size])}>
+        <div className="border-b border-[#c9ab67]/30 px-6 py-5">
           <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
           {description ? <p className="mt-1 text-sm leading-6 text-slate-600">{description}</p> : null}
         </div>
-        <div className="px-6 py-5">{children}</div>
-        {footer ? <div className="flex flex-wrap justify-end gap-3 border-t border-stone-200 px-6 py-4">{footer}</div> : null}
+        {hasBodyContent ? <div className="px-6 py-5">{children}</div> : null}
+        {footer ? <div className="flex flex-wrap justify-end gap-3 border-t border-[#c9ab67]/30 px-6 py-4">{footer}</div> : null}
       </div>
     </div>,
     document.body,

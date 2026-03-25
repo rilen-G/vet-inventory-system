@@ -49,7 +49,7 @@ export function PaymentForm({ invoice, onSubmit, isSubmitting }: PaymentFormProp
         </div>
       </div>
 
-      <div className="mt-5 grid gap-4 rounded-3xl bg-stone-50 p-4 sm:grid-cols-3">
+      <div className="mt-5 grid gap-4 rounded-3xl border border-[#c9ab67]/30 bg-[#fcfaf4] p-4 sm:grid-cols-3">
         <div>
           <div className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">Invoice total</div>
           <div className="mt-2 text-2xl font-semibold text-slate-900">{formatCurrency(invoice.total)}</div>

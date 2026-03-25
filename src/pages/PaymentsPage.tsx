@@ -94,7 +94,9 @@ export function PaymentsPage() {
                     type="button"
                     onClick={() => setSearchParams({ invoiceId: String(invoice.id) })}
                     className={`w-full rounded-3xl border p-4 text-left transition ${
-                      isSelected ? "border-stone-400 bg-stone-50" : "border-stone-200 bg-white hover:border-stone-300"
+                      isSelected
+                        ? "border-[#b89443] bg-[#fcfaf4]"
+                        : "border-[#c9ab67]/35 bg-white hover:border-[#b89443] hover:bg-[#fcfaf4]"
                     }`}
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -120,12 +122,20 @@ export function PaymentsPage() {
                   <h3 className="text-lg font-semibold text-slate-900">{selectedInvoice.invoice_number}</h3>
                   <p className="mt-1 text-sm text-slate-600">{selectedInvoice.customer_name}</p>
                 </div>
-                <ButtonLink to={`/invoices/${selectedInvoice.id}`} variant="secondary">
-                  View invoice
+                <ButtonLink
+                  className="h-9 w-9 rounded-full border border-[#c9ab67]/40 bg-[#fcfaf4] p-0 text-[#b89443] hover:border-[#b89443] hover:bg-[#f8f2e3] hover:text-[#8f6a1d] focus:ring-[#e5d19d]"
+                  to={`/invoices/${selectedInvoice.id}`}
+                  variant="ghost"
+                  title="View"
+                  aria-label="View"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                  </svg>
                 </ButtonLink>
               </div>
 
-              <div className="grid gap-4 rounded-3xl bg-stone-50 p-4 sm:grid-cols-3">
+              <div className="grid gap-4 rounded-3xl border border-[#c9ab67]/30 bg-[#fcfaf4] p-4 sm:grid-cols-3">
                 <div>
                   <div className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">Invoice total</div>
                   <div className="mt-2 text-2xl font-semibold text-slate-900">{formatCurrency(selectedInvoice.total)}</div>
@@ -159,7 +169,7 @@ export function PaymentsPage() {
               ) : (
                 <div className="mt-5 space-y-3">
                   {selectedInvoice.payments.map((payment) => (
-                    <div key={payment.id} className="rounded-2xl border border-stone-200 p-4">
+                    <div key={payment.id} className="rounded-2xl border border-[#c9ab67]/35 p-4">
                       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                         <div>
                           <div className="text-sm font-semibold text-slate-900">{payment.receipt_number}</div>
@@ -168,8 +178,16 @@ export function PaymentsPage() {
                           </div>
                           {payment.notes ? <div className="mt-2 text-sm text-slate-500">{payment.notes}</div> : null}
                         </div>
-                        <ButtonLink to={`/receipts/${payment.id}`} variant="secondary">
-                          View receipt
+                        <ButtonLink
+                          className="h-9 w-9 rounded-full border border-[#c9ab67]/40 bg-[#fcfaf4] p-0 text-[#b89443] hover:border-[#b89443] hover:bg-[#f8f2e3] hover:text-[#8f6a1d] focus:ring-[#e5d19d]"
+                          to={`/receipts/${payment.id}`}
+                          variant="ghost"
+                          title="View"
+                          aria-label="View"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                          </svg>
                         </ButtonLink>
                       </div>
                     </div>
@@ -195,7 +213,7 @@ export function PaymentsPage() {
         {!paymentsQuery.isLoading && !paymentsQuery.isError && (paymentsQuery.data?.length ?? 0) > 0 ? (
           <div className="mt-5 space-y-3">
             {paymentsQuery.data?.slice(0, 6).map((payment) => (
-              <div key={payment.id} className="rounded-2xl border border-stone-200 p-4">
+              <div key={payment.id} className="rounded-2xl border border-[#c9ab67]/35 p-4">
                 <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                   <div>
                     <div className="text-sm font-semibold text-slate-900">{payment.receipt_number}</div>
@@ -206,8 +224,16 @@ export function PaymentsPage() {
                       {payment.payment_method} • {formatDate(payment.payment_date)} • {formatCurrency(payment.amount_paid)}
                     </div>
                   </div>
-                  <ButtonLink to={`/receipts/${payment.id}`} variant="secondary">
-                    View receipt
+                  <ButtonLink
+                    className="h-9 w-9 rounded-full border border-[#c9ab67]/40 bg-[#fcfaf4] p-0 text-[#b89443] hover:border-[#b89443] hover:bg-[#f8f2e3] hover:text-[#8f6a1d] focus:ring-[#e5d19d]"
+                    to={`/receipts/${payment.id}`}
+                    variant="ghost"
+                    title="View"
+                    aria-label="View"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                    </svg>
                   </ButtonLink>
                 </div>
               </div>

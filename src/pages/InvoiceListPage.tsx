@@ -94,10 +94,10 @@ export function InvoiceListPage() {
 
       <Card>
         <div className="flex flex-col gap-4">
-          <div>
-            <h3 className="text-lg font-semibold text-slate-900">Invoice history</h3>
-            <p className="mt-1 text-sm text-slate-600">Voided invoices remain visible here for traceability.</p>
-          </div>
+          {/*<div>*/}
+          {/*  <h3 className="text-lg font-semibold text-slate-900">Invoice history</h3>*/}
+          {/*  <p className="mt-1 text-sm text-slate-600">Voided invoices remain visible here for traceability.</p>*/}
+          {/*</div>*/}
 
           <div className="grid gap-3 lg:grid-cols-[1.4fr_auto]">
             <Input
@@ -201,12 +201,20 @@ export function InvoiceListPage() {
                       <TableCell>{formatCurrency(invoice.total)}</TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-2">
-                          <ButtonLink className="px-3 py-2 text-xs" variant="secondary" to={`/invoices/${invoice.id}`}>
-                            View
+                          <ButtonLink
+                            className="h-9 w-9 rounded-full border border-[#c9ab67]/40 bg-[#fcfaf4] p-0 text-[#b89443] hover:border-[#b89443] hover:bg-[#f8f2e3] hover:text-[#8f6a1d] focus:ring-[#e5d19d]"
+                            variant="ghost"
+                            to={`/invoices/${invoice.id}`}
+                            title="View"
+                            aria-label="View"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                            </svg>
                           </ButtonLink>
                           {invoice.status === "Draft" ? (
                             <ButtonLink
-                              className="h-9 w-9 rounded-full border-0 bg-transparent p-0"
+                              className="h-9 w-9 rounded-full border border-[#c9ab67]/40 bg-[#fcfaf4] p-0 text-[#b89443] hover:border-[#b89443] hover:bg-[#f8f2e3] hover:text-[#8f6a1d] focus:ring-[#e5d19d]"
                               variant="ghost"
                               to={`/invoices/${invoice.id}/edit`}
                               title="Edit"

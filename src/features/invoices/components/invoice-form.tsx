@@ -135,7 +135,7 @@ export function InvoiceForm({
             </div>
           </div>
 
-          <div className="rounded-3xl bg-stone-50 p-5">
+          <div className="rounded-3xl border border-[#c9ab67]/35 bg-[#fcfaf4] p-5">
             <div className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">Invoice summary</div>
             <div className="mt-4 space-y-4">
               <div>
@@ -187,7 +187,7 @@ export function InvoiceForm({
               const selectRegistration = form.register(`line_items.${index}.inventory_item_id`);
 
               return (
-                <div key={field.id} className="rounded-3xl border border-stone-200 p-4">
+                <div key={field.id} className="rounded-3xl border border-[#c9ab67]/35 p-4">
                   <div className="grid gap-4 xl:grid-cols-[1.5fr_0.8fr_0.8fr_auto]">
                     <div>
                       <label className="text-sm font-semibold text-slate-700">Inventory item lot</label>
@@ -240,11 +240,11 @@ export function InvoiceForm({
                       {fieldError(form.formState.errors.line_items?.[index]?.unit_price?.message)}
                     </div>
 
-                    <div className="flex items-center pt-0">
+                    <div className="flex items-start pt-[1.3rem]">
                       <Button
                         type="button"
                         variant="ghost"
-                        className="w-full px-0"
+                        className="h-9 w-9 rounded-full border border-[#c9ab67]/40 bg-[#fcfaf4] p-0 text-[#b89443] hover:border-[#b89443] hover:bg-[#f8f2e3] hover:text-[#8f6a1d] focus:ring-[#e5d19d]"
                         onClick={() => {
                           if (lineItemsArray.fields.length > 1) {
                             lineItemsArray.remove(index);
@@ -259,7 +259,7 @@ export function InvoiceForm({
                           viewBox="0 0 24 24"
                           strokeWidth={1.5}
                           stroke="currentColor"
-                          className="size-7"
+                          className="size-6"
                           aria-hidden="true"
                         >
                           <path
@@ -272,7 +272,7 @@ export function InvoiceForm({
                     </div>
                   </div>
 
-                  <div className="mt-4 flex flex-col gap-3 rounded-2xl bg-stone-50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="mt-4 flex flex-col gap-3 rounded-2xl border border-[#c9ab67]/25 bg-[#fcfaf4] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
                     <div className="text-sm text-slate-600">
                       Line total: <span className="font-semibold text-slate-900">{formatCurrency(quantity * unitPrice)}</span>
                     </div>
@@ -288,7 +288,7 @@ export function InvoiceForm({
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-3xl bg-stone-50 px-5 py-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-[#c9ab67]/30 bg-[#fcfaf4] px-5 py-4">
           <div>
             <div className="text-sm text-slate-500">Subtotal</div>
             <div className="mt-1 text-2xl font-semibold text-slate-900">{formatCurrency(totals.subtotal)}</div>

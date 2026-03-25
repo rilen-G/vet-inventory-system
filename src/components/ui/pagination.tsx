@@ -23,8 +23,8 @@ function PaginationArrowButton({
       type="button"
       disabled={disabled}
       className={cn(
-        "inline-flex h-10 w-10 items-center justify-center rounded-full border border-stone-200 bg-white text-slate-700 transition",
-        disabled ? "cursor-not-allowed opacity-40" : "hover:border-stone-300 hover:text-slate-950",
+        "inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#c9ab67]/45 bg-[#fcfaf4] text-[#b89443] transition",
+        disabled ? "cursor-not-allowed opacity-40" : "hover:border-[#b89443] hover:text-[#8f6a1d]",
         className,
       )}
       {...props}

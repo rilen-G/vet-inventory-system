@@ -156,7 +156,7 @@ export function InvoiceDetailPage() {
                 <InvoiceStatusBadge status={invoice.status} />
                 {invoice.status === "Draft" ? (
                   <ButtonLink
-                    className="h-9 w-9 rounded-full border-0 bg-transparent p-0"
+                    className="h-9 w-9 rounded-full border border-[#c9ab67]/40 bg-[#fcfaf4] p-0 text-[#b89443] hover:border-[#b89443] hover:bg-[#f8f2e3] hover:text-[#8f6a1d] focus:ring-[#e5d19d]"
                     to={`/invoices/${invoice.id}/edit`}
                     variant="ghost"
                     title="Edit"
@@ -171,30 +171,30 @@ export function InvoiceDetailPage() {
             </div>
 
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-              <div className="rounded-2xl bg-stone-50 p-4">
+              <div className="rounded-2xl border border-[#c9ab67]/30 bg-[#fcfaf4] p-4">
                 <div className="text-sm text-slate-500">Invoice date</div>
                 <div className="mt-1 text-lg font-semibold text-slate-900">{formatDate(invoice.invoice_date)}</div>
               </div>
-              <div className="rounded-2xl bg-stone-50 p-4">
+              <div className="rounded-2xl border border-[#c9ab67]/30 bg-[#fcfaf4] p-4">
                 <div className="text-sm text-slate-500">Due date</div>
                 <div className="mt-1 text-lg font-semibold text-slate-900">{invoice.due_date ? formatDate(invoice.due_date) : "No due date"}</div>
               </div>
-              <div className="rounded-2xl bg-stone-50 p-4">
+              <div className="rounded-2xl border border-[#c9ab67]/30 bg-[#fcfaf4] p-4">
                 <div className="text-sm text-slate-500">Customer contact</div>
                 <div className="mt-1 text-lg font-semibold text-slate-900">{invoice.customer_contact ?? "Not provided"}</div>
               </div>
-              <div className="rounded-2xl bg-stone-50 p-4">
+              <div className="rounded-2xl border border-[#c9ab67]/30 bg-[#fcfaf4] p-4">
                 <div className="text-sm text-slate-500">Invoice total</div>
                 <div className="mt-1 text-lg font-semibold text-slate-900">{formatCurrency(invoice.total)}</div>
               </div>
             </div>
 
             <div className="grid gap-5 xl:grid-cols-[1.3fr_0.7fr]">
-              <div className="rounded-2xl border border-stone-200 p-4">
+              <div className="rounded-2xl border border-[#c9ab67]/35 p-4">
                 <div className="text-sm font-semibold text-slate-900">Customer address</div>
                 <div className="mt-2 text-sm leading-7 text-slate-600">{invoice.customer_address ?? "No address provided."}</div>
               </div>
-              <div className="rounded-2xl border border-stone-200 p-4">
+              <div className="rounded-2xl border border-[#c9ab67]/35 p-4">
                 <div className="text-sm font-semibold text-slate-900">Internal notes</div>
                 <div className="mt-2 text-sm leading-7 text-slate-600">{invoice.notes ?? "No notes for this invoice."}</div>
               </div>
@@ -288,7 +288,7 @@ export function InvoiceDetailPage() {
               <PaymentStatusBadge status={paymentStatus} />
             </div>
 
-            <div className="mt-5 grid gap-4 rounded-3xl bg-stone-50 p-4 sm:grid-cols-3">
+            <div className="mt-5 grid gap-4 rounded-3xl border border-[#c9ab67]/30 bg-[#fcfaf4] p-4 sm:grid-cols-3">
               <div>
                 <div className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">Paid so far</div>
                 <div className="mt-2 text-2xl font-semibold text-slate-900">{formatCurrency(paidTotal)}</div>
@@ -318,7 +318,7 @@ export function InvoiceDetailPage() {
             {invoice.payments.length > 0 ? (
               <div className="mt-5 space-y-3">
                 {invoice.payments.map((payment) => (
-                  <div key={payment.id} className="rounded-2xl border border-stone-200 p-4">
+                  <div key={payment.id} className="rounded-2xl border border-[#c9ab67]/35 p-4">
                     <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                       <div>
                         <div className="text-sm font-semibold text-slate-900">{payment.receipt_number}</div>
@@ -327,8 +327,16 @@ export function InvoiceDetailPage() {
                         </div>
                         {payment.notes ? <div className="mt-2 text-sm text-slate-500">{payment.notes}</div> : null}
                       </div>
-                      <ButtonLink to={`/receipts/${payment.id}`} variant="secondary">
-                        View receipt
+                      <ButtonLink
+                        className="h-9 w-9 rounded-full border border-[#c9ab67]/40 bg-[#fcfaf4] p-0 text-[#b89443] hover:border-[#b89443] hover:bg-[#f8f2e3] hover:text-[#8f6a1d] focus:ring-[#e5d19d]"
+                        to={`/receipts/${payment.id}`}
+                        variant="ghost"
+                        title="View"
+                        aria-label="View"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                        </svg>
                       </ButtonLink>
                     </div>
                   </div>

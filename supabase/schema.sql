@@ -49,6 +49,24 @@ before update on public.inventory_items
 for each row
 execute function public.set_updated_at();
 
+create table if not exists public.app_users (
+  id uuid primary key references auth.users(id) on delete cascade,
+  email text not null,
+  full_name text,
+  role text not null default 'staff' check (role in ('admin','staff')),
+  is_active boolean not null default true,
+  created_at timestamp with time zone not null default now()
+);
+
+create unique index if not exists app_users_email_key
+  on public.app_users (lower(email));
+
+create index if not exists app_users_role_idx
+  on public.app_users (role);
+
+create index if not exists app_users_is_active_idx
+  on public.app_users (is_active);
+
 create table if not exists public.invoices (
   id bigint generated always as identity primary key,
   invoice_number text not null unique,
@@ -376,55 +394,115 @@ begin
 end;
 $$;
 
-grant usage on schema public to anon, authenticated;
-grant select, insert, update, delete on all tables in schema public to anon, authenticated;
-grant usage, select on all sequences in schema public to anon, authenticated;
-grant execute on function public.finalize_invoice(bigint) to anon, authenticated;
-grant execute on function public.void_invoice(bigint, text) to anon, authenticated;
-grant execute on function public.record_payment(bigint, text, date, text, numeric, text) to anon, authenticated;
+create or replace function public.is_active_app_user()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.app_users
+    where id = auth.uid()
+      and is_active = true
+  );
+$$;
+
+create or replace function public.current_app_user_role()
+returns text
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select role
+  from public.app_users
+  where id = auth.uid();
+$$;
+
+revoke all on schema public from anon;
+revoke all on all tables in schema public from anon;
+revoke all on all sequences in schema public from anon;
+revoke all on all functions in schema public from anon;
+
+grant usage on schema public to authenticated;
+grant select, insert, update, delete on public.inventory_items to authenticated;
+grant select, insert, update, delete on public.stock_movements to authenticated;
+grant select, insert, update, delete on public.invoices to authenticated;
+grant select, insert, update, delete on public.invoice_items to authenticated;
+grant select, insert, update, delete on public.payments to authenticated;
+grant select, insert, update, delete on public.app_users to authenticated;
+grant usage, select on all sequences in schema public to authenticated;
+grant execute on function public.finalize_invoice(bigint) to authenticated;
+grant execute on function public.void_invoice(bigint, text) to authenticated;
+grant execute on function public.record_payment(bigint, text, date, text, numeric, text) to authenticated;
+grant execute on function public.is_active_app_user() to authenticated;
+grant execute on function public.current_app_user_role() to authenticated;
 
 alter table public.inventory_items enable row level security;
 alter table public.stock_movements enable row level security;
 alter table public.invoices enable row level security;
 alter table public.invoice_items enable row level security;
 alter table public.payments enable row level security;
+alter table public.app_users enable row level security;
 
 drop policy if exists inventory_items_open_access on public.inventory_items;
-create policy inventory_items_open_access
+drop policy if exists inventory_items_staff_access on public.inventory_items;
+create policy inventory_items_staff_access
 on public.inventory_items
 for all
-to anon, authenticated
-using (true)
-with check (true);
+to authenticated
+using (public.is_active_app_user())
+with check (public.is_active_app_user());
 
 drop policy if exists stock_movements_open_access on public.stock_movements;
-create policy stock_movements_open_access
+drop policy if exists stock_movements_staff_access on public.stock_movements;
+create policy stock_movements_staff_access
 on public.stock_movements
 for all
-to anon, authenticated
-using (true)
-with check (true);
+to authenticated
+using (public.is_active_app_user())
+with check (public.is_active_app_user());
 
 drop policy if exists invoices_open_access on public.invoices;
-create policy invoices_open_access
+drop policy if exists invoices_staff_access on public.invoices;
+create policy invoices_staff_access
 on public.invoices
 for all
-to anon, authenticated
-using (true)
-with check (true);
+to authenticated
+using (public.is_active_app_user())
+with check (public.is_active_app_user());
 
 drop policy if exists invoice_items_open_access on public.invoice_items;
-create policy invoice_items_open_access
+drop policy if exists invoice_items_staff_access on public.invoice_items;
+create policy invoice_items_staff_access
 on public.invoice_items
 for all
-to anon, authenticated
-using (true)
-with check (true);
+to authenticated
+using (public.is_active_app_user())
+with check (public.is_active_app_user());
 
 drop policy if exists payments_open_access on public.payments;
-create policy payments_open_access
+drop policy if exists payments_staff_access on public.payments;
+create policy payments_staff_access
 on public.payments
 for all
-to anon, authenticated
-using (true)
-with check (true);
+to authenticated
+using (public.is_active_app_user())
+with check (public.is_active_app_user());
+
+drop policy if exists app_users_self_select on public.app_users;
+create policy app_users_self_select
+on public.app_users
+for select
+to authenticated
+using (id = auth.uid());
+
+drop policy if exists app_users_admin_manage on public.app_users;
+create policy app_users_admin_manage
+on public.app_users
+for all
+to authenticated
+using (public.current_app_user_role() = 'admin')
+with check (public.current_app_user_role() = 'admin');

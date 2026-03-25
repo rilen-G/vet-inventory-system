@@ -1,6 +1,26 @@
 export type Database = {
   public: {
     Tables: {
+      app_users: {
+        Row: {
+          id: string;
+          email: string;
+          full_name: string | null;
+          role: "admin" | "staff";
+          is_active: boolean;
+          created_at: string | null;
+        };
+        Insert: {
+          id: string;
+          email: string;
+          full_name?: string | null;
+          role?: "admin" | "staff";
+          is_active?: boolean;
+          created_at?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["app_users"]["Insert"]>;
+        Relationships: [];
+      };
       inventory_items: {
         Row: {
           id: number;
@@ -144,11 +164,19 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      current_app_user_role: {
+        Args: Record<string, never>;
+        Returns: string | null;
+      };
       finalize_invoice: {
         Args: {
           p_invoice_id: number;
         };
         Returns: Database["public"]["Tables"]["invoices"]["Row"];
+      };
+      is_active_app_user: {
+        Args: Record<string, never>;
+        Returns: boolean;
       };
       void_invoice: {
         Args: {

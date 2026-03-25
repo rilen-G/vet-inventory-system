@@ -63,7 +63,7 @@ export const NumberInput = forwardRef<HTMLInputElement, InternalNumberInputProps
           <div className="absolute inset-y-0 right-3 flex w-6 flex-col items-center justify-center gap-0.5">
           <button
             type="button"
-            className="inline-flex h-4 items-center justify-center text-slate-500 transition hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-stone-300"
+            className="inline-flex h-4 items-center justify-center text-[#b89443] transition hover:text-[#8f6a1d] focus:outline-none focus:ring-2 focus:ring-[#e5d19d]"
             onClick={() => step("up")}
             aria-label="Increase value"
           >
@@ -83,7 +83,7 @@ export const NumberInput = forwardRef<HTMLInputElement, InternalNumberInputProps
           </button>
           <button
             type="button"
-            className="inline-flex h-4 items-center justify-center text-slate-500 transition hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-stone-300"
+            className="inline-flex h-4 items-center justify-center text-[#b89443] transition hover:text-[#8f6a1d] focus:outline-none focus:ring-2 focus:ring-[#e5d19d]"
             onClick={() => step("down")}
             aria-label="Decrease value"
           >

@@ -105,10 +105,10 @@ export function InventoryListPage() {
 
       <Card>
         <div className="flex flex-col gap-4">
-          <div>
-            <h3 className="text-lg font-semibold text-slate-900">Inventory list</h3>
-            <p className="mt-1 text-sm text-slate-600">Search and filter inventory lots, then open an item to edit details, stock, and threshold.</p>
-          </div>
+          {/*<div>*/}
+          {/*  <h3 className="text-lg font-semibold text-slate-900">Inventory list</h3>*/}
+          {/*  <p className="mt-1 text-sm text-slate-600">Search and filter inventory lots, then open an item to edit details, stock, and threshold.</p>*/}
+          {/*</div>*/}
 
           <div className="grid gap-3 lg:grid-cols-[2fr_1fr_1fr_1fr_auto]">
             <Input
@@ -220,7 +220,7 @@ export function InventoryListPage() {
                       <TableCell>
                         <div className="flex flex-wrap gap-2">
                           <ButtonLink
-                            className="h-9 w-9 rounded-full border-0 bg-transparent p-0 hover:bg-stone-100"
+                            className="h-9 w-9 rounded-full border border-[#c9ab67]/40 bg-[#fcfaf4] p-0 text-[#b89443] hover:border-[#b89443] hover:bg-[#f8f2e3] hover:text-[#8f6a1d] focus:ring-[#e5d19d]"
                             variant="ghost"
                             to={`/inventory/${item.id}/edit`}
                             title="Edit"
@@ -231,7 +231,7 @@ export function InventoryListPage() {
                             </svg>
                           </ButtonLink>
                           <Button
-                            className="h-9 w-9 rounded-full border-0 p-0"
+                            className="h-9 w-9 rounded-full border border-[#c9ab67]/40 bg-[#fcfaf4] p-0 text-[#b89443] hover:border-[#b89443] hover:bg-[#f8f2e3] hover:text-[#8f6a1d] focus:ring-[#e5d19d]"
                             variant="ghost"
                             onClick={() => {
                               setArchiveError(null);
