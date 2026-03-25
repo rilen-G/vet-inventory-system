@@ -240,7 +240,7 @@ export function InvoiceForm({
                       {fieldError(form.formState.errors.line_items?.[index]?.unit_price?.message)}
                     </div>
 
-                    <div className="flex items-start pt-[1.3rem]">
+                    <div className="flex items-start pt-[1.65rem]">
                       <Button
                         type="button"
                         variant="ghost"

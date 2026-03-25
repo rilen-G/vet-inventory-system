@@ -25,7 +25,6 @@ export function exportReportsWorkbook({ inventoryItems, invoices, payments }: Ex
     "Low Stock Threshold": item.low_stock_threshold,
     "Unit Price": item.unit_price,
     Status: getInventoryStatus(item),
-    Notes: item.notes ?? "",
   }));
 
   const lowStockRows = inventoryItems.filter((item) => isLowStock(item)).map((item) => ({
@@ -64,7 +63,6 @@ export function exportReportsWorkbook({ inventoryItems, invoices, payments }: Ex
     "Payment Date": formatDate(payment.payment_date),
     "Payment Method": payment.payment_method,
     "Amount Paid": payment.amount_paid,
-    Notes: payment.notes ?? "",
   }));
 
   XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(inventoryRows), "Inventory");

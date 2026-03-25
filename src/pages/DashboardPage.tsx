@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import { SupabaseRequired } from "../components/feedback/supabase-required";
 import { Card } from "../components/ui/card";
 import { PageHeader } from "../components/ui/page-header";
@@ -38,6 +40,32 @@ export function DashboardPage() {
   const draftCount = invoices.filter((invoice) => invoice.status === "Draft").length;
   const finalizedCount = invoices.filter((invoice) => invoice.status === "Finalized").length;
   const unpaidCount = invoices.filter((invoice) => invoice.status === "Finalized" && getInvoiceBalance(invoice) > 0).length;
+  const alertItems = [
+    {
+      key: "expired",
+      label: "Expired",
+      description: "Requires immediate review before the next sale.",
+      count: expiredCount,
+      to: "/inventory?status=expired",
+      indicatorClassName: "bg-[#f20c36]",
+    },
+    {
+      key: "near-expiry",
+      label: "Near expiry",
+      description: "Lots expiring within the next 60 days.",
+      count: nearExpiryCount,
+      to: "/inventory?status=near-expiry",
+      indicatorClassName: "bg-amber-500",
+    },
+    {
+      key: "low-stock",
+      label: "Low stock",
+      description: "Lots at or below the configured threshold.",
+      count: lowStockCount,
+      to: "/inventory?status=low-stock",
+      indicatorClassName: "bg-[#FF0090]",
+    },
+  ];
 
   const invoiceActivities = invoices
     .filter((invoice) => invoice.status === "Finalized" || invoice.status === "Voided" || invoice.status === "Cancelled")
@@ -132,22 +160,33 @@ export function DashboardPage() {
         </Card>
 
         <Card>
-          <h3 className="text-lg font-semibold text-slate-900">Alert summary</h3>
-          {/*<p className="mt-1 text-sm text-slate-600">Operational alerts that need review during the demo.</p>*/}
+          <h3 className="text-lg font-semibold text-slate-900">Inventory alerts</h3>
+          <p className="mt-1 text-sm text-slate-600">Items that need attention are ordered from most urgent to least urgent.</p>
 
           <div className="mt-6 space-y-3">
-            <div className="rounded-2xl border border-[#c9ab67]/25 bg-white/90 p-4">
-              <div className="text-sm font-medium text-slate-700">Low stock</div>
-              <div className="mt-2 text-2xl font-semibold text-slate-900">{lowStockCount}</div>
-            </div>
-            <div className="rounded-2xl border border-[#c9ab67]/25 bg-white/90 p-4">
-              <div className="text-sm font-medium text-slate-700">Near expiry</div>
-              <div className="mt-2 text-2xl font-semibold text-slate-900">{nearExpiryCount}</div>
-            </div>
-            <div className="rounded-2xl border border-[#c9ab67]/25 bg-white/90 p-4">
-              <div className="text-sm font-medium text-slate-700">Expired</div>
-              <div className="mt-2 text-2xl font-semibold text-slate-900">{expiredCount}</div>
-            </div>
+            {alertItems.map((item) => (
+              <div key={item.key} className="rounded-2xl border border-[#c9ab67]/25 bg-white/90 p-4">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-3">
+                      <span className={`inline-flex h-2.5 w-2.5 rounded-full ${item.indicatorClassName}`} />
+                      <div className="text-sm font-semibold text-slate-900">{item.label}</div>
+                    </div>
+                    <p className="mt-2 text-sm leading-6 text-slate-600">{item.description}</p>
+                    <Link
+                      to={item.to}
+                      className="mt-3 inline-flex text-sm font-semibold text-[#b89443] transition hover:text-[#8f6a1d]"
+                    >
+                      View items
+                    </Link>
+                  </div>
+                  <div className="text-left">
+                    <div className="text-3xl font-semibold text-slate-900">{item.count}</div>
+                    <div className="mt-1 text-xs uppercase tracking-[0.18em] text-stone-500">lots</div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </Card>
       </div>

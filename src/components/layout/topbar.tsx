@@ -19,7 +19,7 @@ export function Topbar() {
   }, [location.pathname]);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-stone-200/80 bg-white/88 backdrop-blur-xl">
+    <header className="sticky top-0 z-30 border-b border-stone-200/80 bg-white/5 backdrop-blur-sm">
       <div className="mx-auto max-w-[1720px] px-4 sm:px-6 lg:px-8">
         <div className="relative flex min-h-[72px] items-center justify-between gap-4">
           <div className="flex min-w-0 items-center gap-3">
@@ -32,16 +32,28 @@ export function Topbar() {
               <MenuIcon />
             </button>
 
-            <div className="hidden min-w-0 md:block">
+            <div className="hidden min-w-0 items-center gap-3 md:flex">
+              <img
+                src="/company_logo_no_name.png"
+                alt="L.B. Veterinary Products Trading"
+                className="h-12 w-12 object-contain"
+              />
               <div className="truncate text-sm font-semibold uppercase tracking-[0.18em] text-[#b89443]">
                 L.B. Veterinary Products Trading
               </div>
             </div>
           </div>
 
-          <div className="pointer-events-none absolute left-1/2 flex -translate-x-1/2 flex-col items-center text-center leading-tight text-[#b89443] md:hidden">
-            <span className="whitespace-nowrap text-[0.72rem] font-semibold uppercase tracking-[0.16em]">L.B. Veterinary</span>
-            <span className="whitespace-nowrap text-[0.66rem] font-medium uppercase tracking-[0.14em]">Products Trading</span>
+          <div className="pointer-events-none absolute left-1/2 flex -translate-x-1/2 items-center gap-2 text-[#b89443] md:hidden">
+            <img
+              src="/company_logo_no_name.png"
+              alt="L.B. Veterinary Products Trading"
+              className="h-12 w-12 object-contain"
+            />
+            <div className="flex flex-col items-start text-left leading-tight">
+              <span className="whitespace-nowrap text-[0.72rem] font-semibold uppercase tracking-[0.16em]">L.B. Veterinary</span>
+              <span className="whitespace-nowrap text-[0.66rem] font-medium uppercase tracking-[0.14em]">Products Trading</span>
+            </div>
           </div>
 
           <div className="hidden min-w-0 items-center gap-3 md:ml-auto md:flex">
@@ -84,10 +96,11 @@ export function Topbar() {
         <div
           className={cn(
             "overflow-hidden transition-[max-height,opacity,padding] duration-200 md:hidden",
-            mobileOpen ? "max-h-96 opacity-100 pb-4" : "max-h-0 opacity-0",
+            mobileOpen ? "max-h-[42rem] opacity-100 pb-4" : "max-h-0 opacity-0",
           )}
         >
           <nav className="grid gap-2 border-t border-stone-200 pt-4">
+            <div className="px-1 pb-1 text-center text-sm font-medium text-slate-600">{userLabel}</div>
             {primaryNavItems.map((item) => (
               <NavLink
                 key={item.to}
@@ -104,7 +117,6 @@ export function Topbar() {
                 <div className="text-sm font-semibold">{item.label}</div>
               </NavLink>
             ))}
-            <div className="rounded-2xl border border-[#c9ab67]/35 bg-[#fcfaf4] px-4 py-3 text-sm text-slate-600">{userLabel}</div>
             <button
               type="button"
               onClick={async () => {

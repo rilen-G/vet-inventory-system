@@ -67,7 +67,7 @@ export function LoginPage() {
             alt="L.B. Veterinary Products Trading"
             className="mx-auto h-40 w-40 object-contain"
           />
-          <h1 className="mt-3 text-2xl font-semibold text-slate-900">Staff sign in</h1>
+          <h1 className="mt-3 text-2xl font-semibold text-slate-900">Sign in</h1>
         </div>
 
         <form

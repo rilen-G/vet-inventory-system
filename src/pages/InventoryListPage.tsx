@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { SupabaseRequired } from "../components/feedback/supabase-required";
 import { Button } from "../components/ui/button";
@@ -27,8 +28,22 @@ import type { InventoryAvailabilityFilter, InventoryItem, InventoryStatusFilter 
 import { isExpired, isLowStock, isNearExpiry, matchesInventoryFilter } from "../features/inventory/utils";
 
 export function InventoryListPage() {
+  const [searchParams] = useSearchParams();
   const [searchValue, setSearchValue] = useState("");
-  const [statusFilter, setStatusFilter] = useState<InventoryStatusFilter>("all");
+  const [statusFilter, setStatusFilter] = useState<InventoryStatusFilter>(() => {
+    const requestedStatus = searchParams.get("status");
+
+    if (
+      requestedStatus === "all" ||
+      requestedStatus === "low-stock" ||
+      requestedStatus === "near-expiry" ||
+      requestedStatus === "expired"
+    ) {
+      return requestedStatus;
+    }
+
+    return "all";
+  });
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [availabilityFilter, setAvailabilityFilter] = useState<InventoryAvailabilityFilter>("active");
   const [currentPage, setCurrentPage] = useState(1);
